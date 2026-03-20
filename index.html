@@ -9,8 +9,7 @@
         body { margin: 0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background: var(--bg); color: white; overflow-x: hidden; }
 
         /* Navbar */
-        .navbar { display: flex; justify-content: space-between; padding: 15px 5%; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); position: fixed; width: 100%; z-index: 2000; box-sizing: border-box; align-items: center; }
-        .logo-area { display: flex; flex-direction: column; }
+        .navbar { display: flex; justify-content: space-between; padding: 15px 5%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); position: fixed; width: 100%; z-index: 2000; box-sizing: border-box; align-items: center; }
         .logo { color: var(--primary); font-weight: bold; font-size: 1.3rem; }
         #userGrade { font-size: 0.7rem; color: #aaa; text-transform: uppercase; margin-top: 2px; }
         .vip-active { color: var(--gold) !important; font-weight: bold; }
@@ -20,35 +19,35 @@
         .btn-add { background: var(--primary); color: white; border: none; padding: 8px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; }
 
         /* Section À LA UNE */
-        .hero { position: relative; width: 100%; height: 70vh; background-size: cover; background-position: center; display: flex; align-items: flex-end; padding: 0 5% 40px 5%; box-sizing: border-box; }
+        .hero { position: relative; width: 100%; height: 60vh; background-size: cover; background-position: center; display: flex; align-items: flex-end; padding: 0 5% 40px 5%; box-sizing: border-box; background-color: #222; }
         .hero::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(0deg, var(--bg) 0%, transparent 100%); }
-        .hero-content { position: relative; z-index: 10; max-width: 600px; }
-        .hero-title { font-size: 2.5rem; font-weight: bold; margin-bottom: 10px; text-shadow: 2px 2px 10px rgba(0,0,0,0.8); }
-        .btn-play-hero { background: white; color: black; border: none; padding: 10px 25px; border-radius: 4px; font-weight: bold; font-size: 1rem; cursor: pointer; display: flex; align-items: center; gap: 10px; }
+        .hero-content { position: relative; z-index: 10; }
+        .hero-title { font-size: 2rem; font-weight: bold; margin-bottom: 15px; }
+        .btn-play-hero { background: white; color: black; border: none; padding: 10px 25px; border-radius: 4px; font-weight: bold; cursor: pointer; }
 
-        /* Controls & Categories */
-        .controls { padding: 20px 5% 10px 5%; background: var(--bg); }
-        #searchBar { width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #444; background: #222; color: white; margin-bottom: 15px; box-sizing: border-box; outline: none; }
+        /* Controls */
+        .controls { padding: 20px 5%; background: var(--bg); }
+        #searchBar { width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #444; background: #222; color: white; margin-bottom: 15px; box-sizing: border-box; }
+        
         .categories { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
-        .cat-btn { background: #333; color: white; border: none; padding: 8px 20px; border-radius: 20px; cursor: pointer; white-space: nowrap; font-size: 0.85rem; }
+        .categories::-webkit-scrollbar { display: none; }
+        .cat-btn { background: #333; color: white; border: none; padding: 8px 20px; border-radius: 20px; cursor: pointer; white-space: nowrap; }
         .cat-btn.active { background: var(--primary); }
-        #btnCatVip { display: none; border: 1px solid var(--gold); color: var(--gold); }
 
         /* Grille */
-        .content { padding: 10px 5% 50px 5%; }
+        .content { padding: 10px 5% 80px 5%; }
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        .card { background: #181818; border-radius: 8px; overflow: hidden; position: relative; height: 230px; cursor: pointer; border: 1px solid #222; }
+        .card { background: #181818; border-radius: 8px; overflow: hidden; position: relative; height: 220px; border: 1px solid #222; }
         .card img { width: 100%; height: 100%; object-fit: cover; }
-        .card-title { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.85); padding: 8px 0; text-align: center; font-size: 0.8rem; }
-        
-        .badge { position: absolute; top: 8px; right: 8px; font-size: 0.6rem; padding: 3px 6px; border-radius: 3px; font-weight: bold; z-index: 10; }
-        .badge-vip { background: var(--gold); color: black; }
+        .card-title { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.8); padding: 5px 0; text-align: center; font-size: 0.75rem; }
 
-        /* Admin & Player */
+        /* Formulaire */
         #adminForm { display: none; background: #111; padding: 90px 5% 20px 5%; border-bottom: 2px solid var(--primary); }
         input, select { width: 100%; padding: 12px; margin: 5px 0; background: #222; color: white; border: 1px solid #333; border-radius: 4px; box-sizing: border-box; }
+
+        /* Player */
         #playerOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 3000; }
-        .close-p { position: absolute; top: 20px; left: 20px; color: white; font-size: 2.5rem; cursor: pointer; z-index: 3100; }
+        .close-p { position: absolute; top: 20px; left: 20px; color: white; font-size: 2rem; cursor: pointer; z-index: 3100; }
     </style>
 </head>
 <body>
@@ -66,33 +65,34 @@
 
     <div id="adminForm">
         <input type="text" id="mT" placeholder="Titre">
-        <input type="text" id="mI" placeholder="Lien de l'image">
-        <input type="text" id="mV" placeholder="Lien de la vidéo">
+        <input type="text" id="mI" placeholder="Lien Image">
+        <input type="text" id="mV" placeholder="Lien Vidéo (YouTube)">
         <select id="mC">
             <option value="Action">Action</option>
             <option value="Animé">Animé</option>
             <option value="Horreur">Horreur</option>
+            <option value="Comédie">Comédie</option>
             <option value="VIP">💎 VIP</option>
         </select>
         <button onclick="addMovie()" style="width:100%; padding:15px; background:var(--primary); color:white; border:none; margin-top:10px; border-radius:5px; font-weight:bold;">PUBLIER</button>
     </div>
 
-    <header id="heroSection" class="hero" style="background-image: url('https://wallpaperaccess.com/full/1923020.jpg');">
+    <header id="heroSection" class="hero">
         <div class="hero-content">
-            <h1 class="hero-title" id="heroTitle">Bienvenue sur Dodoflex</h1>
-            <button class="btn-play-hero" id="heroBtn" onclick="alert('Ajoutez un film pour commencer !')">
-                <span>▶</span> Lancer
-            </button>
+            <h1 class="hero-title" id="heroTitle">Bienvenue</h1>
+            <button class="btn-play-hero" id="heroBtn">▶ Lecture</button>
         </div>
     </header>
 
     <div class="controls">
         <input type="text" id="searchBar" placeholder="Rechercher..." onkeyup="renderAll()">
-        <div class="categories">
+        <div class="categories" id="catBar">
             <button class="cat-btn active" onclick="filterCat('Tous', this)">Tous</button>
             <button class="cat-btn" onclick="filterCat('Action', this)">Action</button>
             <button class="cat-btn" onclick="filterCat('Animé', this)">Animé</button>
-            <button class="cat-btn" id="btnCatVip" onclick="filterCat('VIP', this)">💎 VIP</button>
+            <button class="cat-btn" onclick="filterCat('Horreur', this)">Horreur</button>
+            <button class="cat-btn" onclick="filterCat('Comédie', this)">Comédie</button>
+            <button class="cat-btn" id="btnCatVip" style="display:none; color:var(--gold)" onclick="filterCat('VIP', this)">💎 VIP</button>
         </div>
     </div>
 
@@ -110,7 +110,7 @@
         let userMovies = JSON.parse(localStorage.getItem('dodo_lib')) || [];
         let currentCat = "Tous";
 
-        function updateVipUI() {
+        function updateUI() {
             if(localStorage.getItem('dodo_status') === 'VIP') {
                 document.getElementById('userGrade').innerText = "Grade: PRO ✨";
                 document.getElementById('userGrade').classList.add('vip-active');
@@ -119,49 +119,32 @@
             }
         }
 
-        function askVip() {
-            if(prompt("Code VIP :") === SECRET_CODE) {
-                localStorage.setItem('dodo_status', 'VIP');
-                location.reload();
-            }
-        }
-
         function renderAll() {
             const grid = document.getElementById('movieGrid');
             const isVip = localStorage.getItem('dodo_status') === 'VIP';
             const search = document.getElementById('searchBar').value.toLowerCase();
             
-            // Mise à jour de la bannière À LA UNE avec le dernier film ajouté
+            // Mise à jour Hero
             if(userMovies.length > 0) {
-                const lastMovie = userMovies[0];
-                document.getElementById('heroSection').style.backgroundImage = `url('${lastMovie.img}')`;
-                document.getElementById('heroTitle').innerText = lastMovie.t;
-                document.getElementById('heroBtn').onclick = () => playV(lastMovie.vid, lastMovie.c);
+                const last = userMovies[0];
+                document.getElementById('heroSection').style.backgroundImage = `url('${last.img}')`;
+                document.getElementById('heroTitle').innerText = last.t;
+                document.getElementById('heroBtn').onclick = () => playV(last.vid, last.c);
             }
 
             const filtered = userMovies.filter(m => {
-                if(m.c === 'VIP' && !isVip && currentCat !== 'VIP') return false; 
-                return (currentCat === "Tous" || m.c === currentCat) && m.t.toLowerCase().includes(search);
+                const matchSearch = m.t.toLowerCase().includes(search);
+                const matchCat = (currentCat === "Tous" || m.c === currentCat);
+                if(m.c === 'VIP' && !isVip && currentCat !== 'VIP') return false;
+                return matchSearch && matchCat;
             });
 
             grid.innerHTML = filtered.map((m, i) => `
                 <div class="card" onclick="playV('${m.vid}', '${m.c}')" oncontextmenu="deleteM(${i}); return false;">
-                    ${m.c === 'VIP' ? '<div class="badge badge-vip">💎 VIP</div>' : ''}
                     <img src="${m.img}">
                     <div class="card-title">${m.t}</div>
                 </div>
             `).join('');
-        }
-
-        function playV(url, cat) {
-            if(cat === 'VIP' && localStorage.getItem('dodo_status') !== 'VIP') {
-                alert("Accès VIP requis !");
-                return;
-            }
-            const container = document.getElementById('videoContainer');
-            let finalUrl = url.includes("watch?v=") ? url.replace("watch?v=", "embed/") : url;
-            container.innerHTML = `<iframe src="${finalUrl}?autoplay=1" style="width:100%; height:85%; border:none;" allowfullscreen></iframe>`;
-            document.getElementById('playerOverlay').style.display = 'block';
         }
 
         function addMovie() {
@@ -169,6 +152,27 @@
             if(t && i && v) {
                 userMovies.unshift({t, img: i, vid: v, c});
                 localStorage.setItem('dodo_lib', JSON.stringify(userMovies));
+                document.getElementById('mT').value = ""; // Vide les champs
+                toggleForm();
+                renderAll();
+            } else {
+                alert("Remplis tout !");
+            }
+        }
+
+        function playV(url, cat) {
+            if(cat === 'VIP' && localStorage.getItem('dodo_status') !== 'VIP') {
+                alert("Code VIP requis !"); return;
+            }
+            const container = document.getElementById('videoContainer');
+            let fUrl = url.includes("watch?v=") ? url.replace("watch?v=", "embed/") : url;
+            container.innerHTML = `<iframe src="${fUrl}?autoplay=1" style="width:100%; height:80%; border:none;" allowfullscreen></iframe>`;
+            document.getElementById('playerOverlay').style.display = 'block';
+        }
+
+        function askVip() {
+            if(prompt("Code :") === SECRET_CODE) {
+                localStorage.setItem('dodo_status', 'VIP');
                 location.reload();
             }
         }
@@ -180,12 +184,17 @@
             renderAll();
         }
 
-        function toggleForm() { const f = document.getElementById('adminForm'); f.style.display = (f.style.display == 'block' ? 'none' : 'block'); }
+        function toggleForm() { 
+            const f = document.getElementById('adminForm');
+            f.style.display = (f.style.display === 'block' ? 'none' : 'block');
+        }
+
         function closeP() { document.getElementById('playerOverlay').style.display = 'none'; document.getElementById('videoContainer').innerHTML = ""; }
         function deleteM(i) { if(confirm("Supprimer ?")) { userMovies.splice(i,1); localStorage.setItem('dodo_lib', JSON.stringify(userMovies)); renderAll(); } }
 
-        updateVipUI();
+        updateUI();
         renderAll();
     </script>
 </body>
 </html>
+
