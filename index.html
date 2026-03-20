@@ -3,26 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dodoflex Pro</title>
+    <title>Dodoflex Fix</title>
     <style>
         body { margin: 0; background: #141414; color: white; font-family: sans-serif; }
-        .nav { display: flex; justify-content: space-between; padding: 15px; background: #000; align-items: center; border-bottom: 1px solid #333; }
+        .nav { display: flex; justify-content: space-between; padding: 15px; background: #000; align-items: center; border-bottom: 2px solid #e50914; }
         .logo { color: #e50914; font-weight: bold; font-size: 1.2rem; }
         
-        /* Panneau Admin */
-        #adminPanel { display: none; padding: 20px; background: #222; border-bottom: 2px solid #e50914; }
-        input { width: 100%; padding: 10px; margin: 5px 0; background: #333; color: white; border: 1px solid #444; border-radius: 5px; box-sizing: border-box; }
-        .btn-add { width: 100%; padding: 10px; background: #e50914; border: none; color: white; font-weight: bold; border-radius: 5px; margin-top: 5px; }
+        #admin { display: none; padding: 20px; background: #222; }
+        input { width: 100%; padding: 12px; margin: 5px 0; background: #333; color: white; border: 1px solid #444; border-radius: 5px; box-sizing: border-box; font-size: 16px; }
+        
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px; }
+        .card { background: #181818; border-radius: 8px; overflow: hidden; border: 1px solid #333; }
+        .card img { width: 100%; height: 140px; object-fit: cover; }
+        .card-t { padding: 10px; text-align: center; font-size: 0.8rem; }
 
-        /* Grille */
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 15px; }
-        .card { background: #181818; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid #333; }
-        .card img { width: 100%; height: 150px; object-fit: cover; display: block; }
-        .card-title { padding: 10px; text-align: center; font-size: 0.8rem; background: rgba(0,0,0,0.8); }
-
-        /* Lecteur */
         #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; }
-        .close { position: absolute; top: 20px; left: 20px; font-size: 2rem; color: white; cursor: pointer; z-index: 10000; }
+        .close { position: absolute; top: 20px; left: 20px; font-size: 2rem; color: white; padding: 10px; background: rgba(0,0,0,0.5); border-radius: 50%; }
     </style>
 </head>
 <body>
@@ -30,103 +26,89 @@
     <div class="nav">
         <div class="logo">DODOFLEX</div>
         <div>
-            <button onclick="checkVip()" style="background:transparent; border:1px solid gold; color:gold; padding:5px 10px; border-radius:4px;">VIP</button>
-            <button onclick="askAdmin()" style="background:#333; border:none; color:white; padding:5px 10px; border-radius:4px; margin-left:5px;">⚙️</button>
+            <button onclick="doVip()" style="background:gold; border:none; padding:8px 12px; border-radius:5px; font-weight:bold;">VIP</button>
+            <button onclick="doAdmin()" style="background:#333; color:white; border:none; padding:8px 12px; border-radius:5px; margin-left:5px;">⚙️</button>
         </div>
     </div>
 
-    <div id="adminPanel">
-        <h3 style="margin-top:0">Ajouter un film</h3>
-        <input type="text" id="t" placeholder="Titre du film">
-        <input type="text" id="i" placeholder="Lien de l'image (URL)">
-        <input type="text" id="v" placeholder="Lien de la vidéo (URL)">
-        <button class="btn-add" onclick="saveMovie()">PUBLIER SUR LE SITE</button>
+    <div id="admin">
+        <input type="text" id="titre" placeholder="Nom du film">
+        <input type="text" id="img" placeholder="Lien Image (URL)">
+        <input type="text" id="vid" placeholder="Lien Vidéo (YouTube)">
+        <button onclick="addFilm()" style="width:100%; padding:15px; background:#e50914; color:white; border:none; border-radius:5px; font-weight:bold; margin-top:10px;">PUBLIER MAINTENANT</button>
+        <button onclick="resetApp()" style="width:100%; margin-top:20px; background:gray; color:white; border:none; padding:5px; font-size:10px;">EFFACER TOUT (RESET)</button>
     </div>
 
-    <div class="grid" id="container"></div>
+    <div class="grid" id="main"></div>
 
     <div id="player">
-        <div class="close" onclick="closeVideo()">✕</div>
-        <div id="videoBox" style="width:100%; height:100%;"></div>
+        <div class="close" onclick="closeVid()">✕</div>
+        <div id="vBox" style="width:100%; height:100%;"></div>
     </div>
 
     <script>
-        // --- CONFIGURATION ---
-        const PASS_ADMIN = "D121028.";
-        const PASS_VIP = "12199";
-
-        // Films par défaut
-        const DEFAUT = [
+        const PASS = "D121028.";
+        const DEFAULT = [
             {t: "Big Buck Bunny", i: "https://upload.wikimedia.org/wikipedia/commons/c/c5/Big_buck_bunny_poster_big.jpg", v: "https://www.youtube.com/embed/aqz-KE-bpKQ"},
-            {t: "Sintel", i: "https://durian.blender.org/wp-content/uploads/2010/10/sintel-poster.jpg", v: "https://www.youtube.com/embed/eRsGyueVLvQ"}
+            {t: "Sintel", i: "https://vignette.wikia.nocookie.net/p__/images/f/f0/Sintel_poster.jpg/revision/latest?cb=20150111130638&path-prefix=protagonist", v: "https://www.youtube.com/embed/eRsGyueVLvQ"}
         ];
 
-        // Charger les films
-        function load() {
-            const list = JSON.parse(localStorage.getItem('films')) || DEFAUT;
-            const container = document.getElementById('container');
+        function show() {
+            const data = JSON.parse(localStorage.getItem('dodo_films')) || DEFAULT;
+            const container = document.getElementById('main');
             container.innerHTML = "";
-            
-            list.forEach((m, index) => {
+            data.forEach(m => {
                 container.innerHTML += `
-                    <div class="card" onclick="openVideo('${m.v}')">
-                        <img src="${m.i}">
-                        <div class="card-title">${m.t}</div>
-                    </div>
-                `;
+                    <div class="card" onclick="openVid('${m.v}')">
+                        <img src="${m.i}" onerror="this.src='https://via.placeholder.com/150x200?text=Image+Introuvable'">
+                        <div class="card-t">${m.t}</div>
+                    </div>`;
             });
         }
 
-        // Fonctions Boutons
-        function askAdmin() {
-            let p = prompt("Mot de passe Admin :");
-            if(p === PASS_ADMIN) {
-                let panel = document.getElementById('adminPanel');
-                panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
-            } else {
-                alert("Erreur !");
+        function doAdmin() {
+            if(prompt("Pass :") === PASS) {
+                const a = document.getElementById('admin');
+                a.style.display = (a.style.display === 'block') ? 'none' : 'block';
             }
         }
 
-        function checkVip() {
-            let p = prompt("Code VIP :");
-            if(p === PASS_VIP) {
-                alert("Accès VIP Activé !");
-            } else {
-                alert("Code invalide.");
-            }
+        function doVip() {
+            if(prompt("Code :") === "12199") alert("VIP OK !");
         }
 
-        function saveMovie() {
-            let titre = document.getElementById('t').value;
-            let image = document.getElementById('i').value;
-            let video = document.getElementById('v').value;
-
-            if(titre && image && video) {
-                let list = JSON.parse(localStorage.getItem('films')) || DEFAUT;
-                list.unshift({t: titre, i: image, v: video});
-                localStorage.setItem('films', JSON.stringify(list));
+        function addFilm() {
+            const t = document.getElementById('titre').value;
+            const i = document.getElementById('img').value;
+            const v = document.getElementById('vid').value;
+            if(t && i && v) {
+                let data = JSON.parse(localStorage.getItem('dodo_films')) || DEFAULT;
+                data.unshift({t, i, v});
+                localStorage.setItem('dodo_films', JSON.stringify(data));
                 location.reload();
-            } else {
-                alert("Remplis tout !");
             }
         }
 
-        function openVideo(url) {
-            let link = url;
-            if(url.includes("watch?v=")) link = url.replace("watch?v=", "embed/");
-            
-            document.getElementById('videoBox').innerHTML = `<iframe src="${link}?autoplay=1" style="width:100%; height:100%; border:none;" allowfullscreen allow="autoplay"></iframe>`;
+        function openVid(url) {
+            let final = url;
+            if(url.includes("watch?v=")) final = url.replace("watch?v=", "embed/");
+            document.getElementById('vBox').innerHTML = `<iframe src="${final}" style="width:100%; height:100%; border:none;" allowfullscreen></iframe>`;
             document.getElementById('player').style.display = 'block';
         }
 
-        function closeVideo() {
+        function closeVid() {
             document.getElementById('player').style.display = 'none';
-            document.getElementById('videoBox').innerHTML = "";
+            document.getElementById('vBox').innerHTML = "";
         }
 
-        // Lancer au démarrage
-        load();
+        function resetApp() {
+            if(confirm("Supprimer tous les films ajoutés ?")) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        show();
     </script>
 </body>
 </html>
