@@ -3,279 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dodoflex | Premium Streaming</title>
+    <title>Dodoflex | Streaming Libre</title>
     <style>
-        :root { 
-            --primary: #e50914; 
-            --bg: #050505; 
-            --card: #121212; 
-            --gray: #2a2a2a;
+        :root { --primary: #e50914; --bg: #141414; --card-w: 160px; --card-h: 240px; }
+        body { margin: 0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background: var(--bg); color: white; overflow-x: hidden; }
+
+        .navbar { display: flex; justify-content: space-between; padding: 20px 4%; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent); position: fixed; width: 100%; z-index: 1000; box-sizing: border-box; transition: 0.4s; }
+        .logo { color: var(--primary); font-weight: bold; font-size: 1.8rem; letter-spacing: -1px; }
+
+        /* BANDEAU ACCUEIL */
+        .hero { height: 75vh; background: linear-gradient(to top, var(--bg), transparent 30%), url('https://picsum.photos/1200/800?movie') center/cover; display: flex; align-items: flex-end; padding: 0 4% 60px 4%; }
+        .hero-content h1 { font-size: 3.5rem; margin: 0; text-shadow: 2px 2px 10px rgba(0,0,0,0.8); }
+        .btn-add { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 1rem; }
+
+        /* RANGÉES DE FILMS */
+        .row { padding: 30px 0 10px 4%; }
+        .row-title { font-size: 1.5rem; font-weight: bold; margin-bottom: 15px; }
+        .row-posters { display: flex; overflow-x: scroll; padding: 10px 0; scrollbar-width: none; gap: 12px; }
+        .row-posters::-webkit-scrollbar { display: none; }
+
+        .poster { 
+            min-width: var(--card-w); height: var(--card-h); border-radius: 6px; 
+            transition: transform 0.4s ease; cursor: pointer; object-fit: cover;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
         }
+        .poster:hover { transform: scale(1.1); z-index: 10; border: 2px solid white; }
+
+        /* FORMULAIRE */
+        #adminForm { display: none; background: #181818; padding: 110px 4% 30px 4%; border-bottom: 3px solid var(--primary); animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        input { width: 100%; padding: 14px; margin: 6px 0; background: #333; color: white; border: none; border-radius: 4px; box-sizing: border-box; font-size: 1rem; }
         
-        body { 
-            margin: 0; 
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-            background: var(--bg); 
-            color: white; 
-            overflow-x: hidden; 
-        }
-
-        /* Barre de navigation stylée */
-        .navbar { 
-            display: flex; 
-            justify-content: space-between; 
-            padding: 15px 5%; 
-            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent); 
-            align-items: center; 
-            position: fixed; 
-            width: 100%; 
-            z-index: 1000; 
-            box-sizing: border-box; 
-        }
-        .logo { 
-            color: var(--primary); 
-            font-weight: 900; 
-            font-size: 1.8rem; 
-            letter-spacing: -1px; 
-            text-shadow: 0 0 10px rgba(229, 9, 20, 0.5);
-        }
-
-        /* Barre de recherche moderne */
-        .search-container { padding: 90px 5% 10px 5%; background: var(--bg); }
-        #searchBar { 
-            width: 100%; 
-            padding: 15px; 
-            border-radius: 30px; 
-            border: 1px solid var(--gray); 
-            background: #181818; 
-            color: white; 
-            outline: none; 
-            font-size: 1rem; 
-            box-sizing: border-box;
-            transition: 0.3s;
-        }
-        #searchBar:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(229, 9, 20, 0.3); }
-
-        .add-btn { 
-            background: var(--primary); 
-            color: white; 
-            border: none; 
-            padding: 10px 20px; 
-            border-radius: 50px; 
-            font-weight: bold; 
-            cursor:pointer; 
-            transition: 0.3s;
-        }
-        .add-btn:active { transform: scale(0.9); }
-
-        .content { padding: 10px 5% 50px 5%; }
-        h3 { 
-            margin-top: 30px; 
-            font-size: 1.3rem; 
-            font-weight: 600; 
-            letter-spacing: 0.5px;
-            color: #efefef;
-        }
-
-        /* Grille et Cartes avec effet de zoom */
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        .card { 
-            background: var(--card); 
-            border-radius: 12px; 
-            overflow: hidden; 
-            position: relative; 
-            height: 250px; 
-            cursor: pointer; 
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        }
-        .card:active { transform: scale(0.96); }
-        .card img { width: 100%; height: 100%; object-fit: cover; }
-        
-        /* Boutons sur l'affiche */
-        .card-actions { position: absolute; top: 10px; right: 10px; display: flex; flex-direction: column; gap: 8px; }
-        .fav-btn { 
-            background: rgba(0,0,0,0.7); 
-            backdrop-filter: blur(5px);
-            color: white; 
-            border: none; 
-            border-radius: 50%; 
-            width: 35px; 
-            height: 35px; 
-            cursor: pointer; 
-            font-size: 1rem;
-            display: flex; align-items: center; justify-content: center;
-        }
-
-        .card-title { 
-            position: absolute; 
-            bottom: 0; 
-            width: 100%; 
-            background: linear-gradient(transparent, rgba(0,0,0,0.95)); 
-            padding: 15px 0 10px 0; 
-            text-align: center; 
-            font-size: 0.9rem; 
-            font-weight: bold;
-        }
-
-        /* Formulaire d'ajout */
-        #adminForm { 
-            display: none; 
-            background: #111; 
-            padding: 25px; 
-            border-bottom: 2px solid var(--primary); 
-            padding-top: 90px;
-            animation: slideDown 0.4s ease;
-        }
-        @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        
-        input { 
-            width: 100%; 
-            padding: 14px; 
-            margin: 8px 0; 
-            background: #222; 
-            color: white; 
-            border: 1px solid #333; 
-            box-sizing: border-box; 
-            border-radius: 8px; 
-        }
-        
-        /* Lecteur Vidéo Plein Écran */
-        #playerOverlay { 
-            display: none; 
-            position: fixed; 
-            top: 0; left: 0; width: 100%; height: 100%; 
-            background: #000; 
-            z-index: 2000; 
-            flex-direction: column; 
-        }
-        .close-p { 
-            position: absolute; top: 20px; right: 20px; 
-            color: white; font-size: 1.5rem; z-index: 2100; 
-            cursor: pointer; background: rgba(255,255,255,0.1); 
-            width: 45px; height: 45px; display: flex; 
-            align-items: center; justify-content: center; border-radius: 50%;
-        }
+        /* PLAYER PLEIN ÉCRAN */
+        #playerOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; }
+        .close-p { position: absolute; top: 25px; left: 25px; color: white; font-size: 2.5rem; z-index: 2100; cursor: pointer; font-weight: lighter; }
     </style>
 </head>
 <body>
 
-    <nav class="navbar">
+    <nav class="navbar" id="nav">
         <div class="logo">DODOFLEX</div>
-        <button class="add-btn" onclick="toggleForm()">+ AJOUTER</button>
+        <button class="btn-add" onclick="toggleAdmin()">+ AJOUTER</button>
     </nav>
 
     <div id="adminForm">
-        <h2 style="margin-top:0; color:var(--primary);">Nouveau Film</h2>
-        <input type="text" id="mT" placeholder="Titre du film">
-        <input type="text" id="mI" placeholder="Lien de l'image">
+        <h2 style="margin-top:0;">Ajouter un contenu</h2>
+        <input type="text" id="mT" placeholder="Nom du film / série">
+        <input type="text" id="mI" placeholder="Lien de l'affiche (Image URL)">
         <input type="text" id="mV" placeholder="Lien Vidéo (YouTube ou MP4)">
-        <button onclick="addMovie()" style="width:100%; padding:15px; background:var(--primary); color:white; border:none; margin-top:10px; font-weight:bold; border-radius:8px; font-size:1rem;">PUBLIER</button>
+        <button onclick="addMovie()" style="width:100%; padding:15px; background:var(--primary); color:white; border:none; margin-top:15px; font-weight:bold; border-radius:4px; font-size:1.1rem; cursor:pointer;">PUBLIER</button>
     </div>
 
-    <div class="search-container">
-        <input type="text" id="searchBar" placeholder="Rechercher un film, une série..." onkeyup="searchMovies()">
-    </div>
-
-    <main class="content">
-        <div id="favoritesSection" style="display:none;">
-            <h3>Ma Liste ❤️</h3>
-            <div class="grid" id="favGrid"></div>
+    <div class="hero">
+        <div class="hero-content">
+            <h1 id="heroTitle">Dodoflex Original</h1>
+            <p style="font-size: 1.2rem; max-width: 600px; text-shadow: 1px 1px 5px black;">Retrouvez tous vos contenus préférés au même endroit. Ajoutez vos propres liens pour construire votre bibliothèque personnelle.</p>
         </div>
-        <h3 id="gridTitle">Populaires sur Dodoflex</h3>
-        <div class="grid" id="movieGrid"></div>
+    </div>
+
+    <main>
+        <div class="row">
+            <div class="row-title">Votre sélection</div>
+            <div id="emptyMsg" style="padding-left:10px; color:gray; display:none;">Votre bibliothèque est vide. Cliquez sur + AJOUTER pour commencer.</div>
+            <div class="row-posters" id="mainRow"></div>
+        </div>
     </main>
 
     <div id="playerOverlay">
         <div class="close-p" onclick="closeP()">✕</div>
-        <div id="videoContainer" style="width:100%; height:100%; display:flex; align-items:center;"></div>
+        <div id="videoContainer" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;"></div>
     </div>
 
     <script>
         let myLibrary = JSON.parse(localStorage.getItem('dodo_lib')) || [];
-        let myFavs = JSON.parse(localStorage.getItem('dodo_favs')) || [];
 
-        function renderAll(data = myLibrary) {
-            renderGrid(data, 'movieGrid');
-            const favSec = document.getElementById('favoritesSection');
-            if(myFavs.length > 0 && data.length === myLibrary.length) {
-                favSec.style.display = "block";
-                renderGrid(myFavs, 'favGrid', true);
-            } else { favSec.style.display = "none"; }
+        function renderAll() {
+            const mainRow = document.getElementById('mainRow');
+            const emptyMsg = document.getElementById('emptyMsg');
+
+            if(myLibrary.length === 0) {
+                emptyMsg.style.display = 'block';
+                mainRow.innerHTML = "";
+            } else {
+                emptyMsg.style.display = 'none';
+                mainRow.innerHTML = myLibrary.map((m, i) => `
+                    <img class="poster" src="${m.img}" title="${m.t}" onclick="playVideo('${m.vid}')" oncontextmenu="deleteMovie(${i}); return false;">
+                `).join('');
+            }
             localStorage.setItem('dodo_lib', JSON.stringify(myLibrary));
-            localStorage.setItem('dodo_favs', JSON.stringify(myFavs));
         }
 
-        function renderGrid(list, elementId, isFavGrid = false) {
-            const grid = document.getElementById(elementId);
-            grid.innerHTML = list.map((m, i) => {
-                const isFavorite = myFavs.some(f => f.t === m.t);
-                const realIndex = myLibrary.findIndex(movie => movie.t === m.t);
-                return `
-                    <div class="card" onclick="openP('${m.vid}')">
-                        <img src="${m.img}">
-                        <div class="card-actions">
-                            <button class="fav-btn" onclick="event.stopPropagation(); toggleFav('${m.t}')">${isFavorite ? '❤️' : '🤍'}</button>
-                            ${!isFavGrid ? `<button class="fav-btn" onclick="event.stopPropagation(); deleteMovie(${realIndex})">🗑️</button>` : ''}
-                        </div>
-                        <div class="card-title">${m.t}</div>
-                    </div>
-                `;
-            }).join('');
+        function playVideo(url) {
+            const container = document.getElementById('videoContainer');
+            if(url.includes("watch?v=")) url = url.replace("watch?v=", "embed/");
+            if(url.includes("youtu.be/")) url = url.replace("youtu.be/", "youtube.com/embed/");
+
+            if(url.includes("embed") || url.includes("drive.google")) {
+                container.innerHTML = `<iframe src="${url}?autoplay=1" style="width:100%; height:90%; border:none;" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
+            } else {
+                container.innerHTML = `<video src="${url}" controls autoplay style="max-width:100%; max-height:100%;"></video>`;
+            }
+            document.getElementById('playerOverlay').style.display = 'block';
+        }
+
+        function closeP() {
+            document.getElementById('playerOverlay').style.display = 'none';
+            document.getElementById('videoContainer').innerHTML = "";
+        }
+
+        function toggleAdmin() {
+            const form = document.getElementById('adminForm');
+            form.style.display = form.style.display === 'block' ? 'none' : 'block';
+            window.scrollTo(0,0);
         }
 
         function addMovie() {
             const t = document.getElementById('mT').value;
             const i = document.getElementById('mI').value;
-            let v = document.getElementById('mV').value;
-
-            if(v.includes("youtube.com/watch?v=")) v = v.replace("watch?v=", "embed/");
-            if(v.includes("youtu.be/")) v = v.replace("youtu.be/", "youtube.com/embed/");
-
+            const v = document.getElementById('mV').value;
             if(t && i && v) {
-                myLibrary.unshift({ t, img: i, vid: v });
-                renderAll(); toggleForm();
-                document.getElementById('mT').value = ""; document.getElementById('mI').value = ""; document.getElementById('mV').value = "";
-            } else { alert("Remplis tout !"); }
-        }
-
-        function openP(url) {
-            const container = document.getElementById('videoContainer');
-            const overlay = document.getElementById('playerOverlay');
-            if(url.includes("embed") || url.includes("player.")) {
-                container.innerHTML = `<iframe src="${url}?autoplay=1" style="width:100%; height:80vh; border:none;" allow="autoplay; fullscreen" frameborder="0"></iframe>`;
+                myLibrary.unshift({t, img: i, vid: v});
+                renderAll();
+                toggleAdmin();
+                document.getElementById('mT').value = "";
+                document.getElementById('mI').value = "";
+                document.getElementById('mV').value = "";
             } else {
-                container.innerHTML = `<video src="${url}" controls autoplay style="width:100%; max-height:100%;"></video>`;
+                alert("Veuillez remplir tous les champs !");
             }
-            overlay.style.display = "flex";
-        }
-
-        function closeP() {
-            document.getElementById('playerOverlay').style.display = "none";
-            document.getElementById('videoContainer').innerHTML = "";
-        }
-
-        function searchMovies() {
-            const term = document.getElementById('searchBar').value.toLowerCase();
-            const filtered = myLibrary.filter(m => m.t.toLowerCase().includes(term));
-            renderAll(filtered);
-        }
-
-        function toggleFav(title) {
-            const index = myFavs.findIndex(f => f.t === title);
-            if(index > -1) { myFavs.splice(index, 1); } 
-            else { const movie = myLibrary.find(m => m.t === title); myFavs.unshift(movie); }
-            renderAll();
-        }
-
-        function toggleForm() { 
-            const f = document.getElementById('adminForm');
-            f.style.display = (f.style.display === "block") ? "none" : "block";
         }
 
         function deleteMovie(i) {
-            if(confirm("Supprimer ce film ?")) { myLibrary.splice(i,1); renderAll(); }
+            if(confirm("Supprimer ce film de votre bibliothèque ?")) {
+                myLibrary.splice(i, 1);
+                renderAll();
+            }
         }
+
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('nav');
+            if(window.scrollY > 50) nav.style.background = "#141414";
+            else nav.style.background = "linear-gradient(to bottom, rgba(0,0,0,0.8), transparent)";
+        });
 
         renderAll();
     </script>
