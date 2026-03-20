@@ -3,31 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dodoflex | Catalogue Public</title>
+    <title>Dodoflex | Officiel</title>
     <style>
         :root { --primary: #e50914; --bg: #141414; }
-        body { margin: 0; font-family: 'Helvetica Neue', Arial, sans-serif; background: var(--bg); color: white; }
+        body { margin: 0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background: var(--bg); color: white; overflow-x: hidden; }
+
+        /* Barre de navigation */
         .navbar { display: flex; justify-content: space-between; padding: 15px 5%; background: #000; position: fixed; width: 100%; z-index: 1000; box-sizing: border-box; align-items: center; border-bottom: 1px solid #333; }
-        .logo { color: var(--primary); font-weight: bold; font-size: 1.5rem; }
-        .hero { height: 30vh; background: linear-gradient(transparent, var(--bg)), #222; display: flex; align-items: flex-end; padding: 0 5% 20px 5%; }
-        .content { padding: 20px 5%; }
+        .logo { color: var(--primary); font-weight: bold; font-size: 1.5rem; letter-spacing: -1px; }
+        .btn-add { background: var(--primary); color: white; border: none; padding: 10px 18px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.9rem; }
+
+        /* Zone de Recherche et Filtres */
+        .controls { padding: 90px 5% 10px 5%; background: var(--bg); }
+        #searchBar { width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #444; background: #222; color: white; margin-bottom: 15px; box-sizing: border-box; font-size: 1rem; outline: none; }
+        #searchBar:focus { border-color: var(--primary); }
+        
+        .categories { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
+        .categories::-webkit-scrollbar { display: none; }
+        .cat-btn { background: #333; color: white; border: none; padding: 8px 20px; border-radius: 20px; cursor: pointer; white-space: nowrap; font-size: 0.9rem; transition: 0.3s; }
+        .cat-btn.active { background: var(--primary); }
+
+        /* Grille des films */
+        .content { padding: 10px 5% 50px 5%; }
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        .card { background: #181818; border-radius: 8px; overflow: hidden; position: relative; height: 250px; cursor: pointer; border: 1px solid #333; }
+        .card { background: #181818; border-radius: 8px; overflow: hidden; position: relative; height: 240px; cursor: pointer; border: 1px solid #222; transition: transform 0.3s; }
+        .card:hover { transform: scale(1.03); z-index: 5; }
         .card img { width: 100%; height: 100%; object-fit: cover; }
-        .card-title { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.8); padding: 10px 0; text-align: center; font-size: 0.9rem; font-weight: bold; }
+        .card-title { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.85); padding: 10px 0; text-align: center; font-size: 0.85rem; font-weight: bold; }
+
+        /* Formulaire d'ajout (Caché par défaut) */
+        #adminForm { display: none; background: #111; padding: 90px 5% 30px 5%; border-bottom: 3px solid var(--primary); animation: slideDown 0.3s ease; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        input, select { width: 100%; padding: 14px; margin: 8px 0; background: #222; color: white; border: 1px solid #444; border-radius: 5px; box-sizing: border-box; font-size: 1rem; }
+        
+        /* Lecteur Vidéo Plein Écran */
         #playerOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; }
-        .close-p { position: absolute; top: 20px; left: 20px; color: white; font-size: 2rem; cursor: pointer; z-index: 2100; }
+        .close-p { position: absolute; top: 25px; left: 25px; color: white; font-size: 2.5rem; cursor: pointer; z-index: 2101; }
     </style>
 </head>
 <body>
 
     <nav class="navbar">
         <div class="logo">DODOFLEX</div>
-        <div style="font-size: 0.8rem; color: gray;">Catalogue Officiel</div>
+        <button class="btn-add" onclick="toggleForm()">+ AJOUTER</button>
     </nav>
 
-    <div class="hero">
-        <h1>Films & Séries</h1>
+    <div id="adminForm">
+        <h2 style="margin-top:0; color:var(--primary);">Ajouter un film</h2>
+        <input type="text" id="mT" placeholder="Titre du film">
+        <input type="text" id="mI" placeholder="Lien de l'image (URL)">
+        <input type="text" id="mV" placeholder="Lien de la vidéo (YouTube, Drive, MP4)">
+        <select id="mC">
+            <option value="Tous">Choisir une catégorie</option>
+            <option value="Action">Action</option>
+            <option value="Horreur">Horreur</option>
+            <option value="Animé">Animé</option>
+            <option value="Comédie">Comédie</option>
+        </select>
+        <button onclick="addMovie()" style="width:100%; padding:15px; background:var(--primary); color:white; border:none; margin-top:10px; font-weight:bold; border-radius:5px; cursor:pointer; font-size:1.1rem;">PUBLIER SUR MON APPAREIL</button>
+    </div>
+
+    <div class="controls">
+        <input type="text" id="searchBar" placeholder="Rechercher un film..." onkeyup="filterMovies()">
+        <div class="categories">
+            <button class="cat-btn active" onclick="filterCat('Tous', this)">Tous</button>
+            <button class="cat-btn" onclick="filterCat('Action', this)">Action</button>
+            <button class="cat-btn" onclick="filterCat('Horreur', this)">Horreur</button>
+            <button class="cat-btn" onclick="filterCat('Animé', this)">Animé</button>
+            <button class="cat-btn" onclick="filterCat('Comédie', this)">Comédie</button>
+        </div>
     </div>
 
     <main class="content">
@@ -36,33 +80,60 @@
 
     <div id="playerOverlay">
         <div class="close-p" onclick="closeP()">✕</div>
-        <div id="videoContainer" style="width:100%; height:100%; display:flex; align-items:center;"></div>
+        <div id="videoContainer" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;"></div>
     </div>
 
     <script>
-        // --- C'EST ICI QUE TU AJOUTES TES FILMS POUR TOUT LE MONDE ---
-        // Recopie le modèle : { t: "Titre", img: "Lien Image", vid: "Lien Vidéo" },
-        const myLibrary = [
-            { 
-                t: "Exemple de film", 
-                img: "https://picsum.photos/400/600", 
-                vid: "https://www.w3schools.com/html/mov_bbb.mp4" 
-            },
-            { 
-                t: "Titre du 2ème Film", 
-                img: "Lien_De_Ton_Image_Ici", 
-                vid: "Lien_De_Ta_Video_Ici" 
-            }
+        // FILMS PAR DÉFAUT (Visibles par tout le monde)
+        const defaultMovies = [
+            { t: "Exemple Film", img: "https://picsum.photos/400/600?movie", vid: "https://www.w3schools.com/html/mov_bbb.mp4", c: "Action" }
         ];
 
-        function renderAll() {
+        let userMovies = JSON.parse(localStorage.getItem('dodo_lib')) || [];
+        let currentCat = "Tous";
+
+        function renderAll(searchTerm = "") {
             const grid = document.getElementById('movieGrid');
-            grid.innerHTML = myLibrary.map((m) => `
-                <div class="card" onclick="playV('${m.vid}')">
+            const allMovies = [...defaultMovies, ...userMovies];
+            
+            const filtered = allMovies.filter(m => {
+                const matchSearch = m.t.toLowerCase().includes(searchTerm.toLowerCase());
+                const matchCat = (currentCat === "Tous" || m.c === currentCat);
+                return matchSearch && matchCat;
+            });
+
+            grid.innerHTML = filtered.map((m, i) => `
+                <div class="card" onclick="playV('${m.vid}')" oncontextmenu="deleteM(${i}); return false;">
                     <img src="${m.img}">
                     <div class="card-title">${m.t}</div>
                 </div>
             `).join('');
+            
+            localStorage.setItem('dodo_lib', JSON.stringify(userMovies));
+        }
+
+        function filterMovies() {
+            renderAll(document.getElementById('searchBar').value);
+        }
+
+        function filterCat(cat, btn) {
+            currentCat = cat;
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderAll(document.getElementById('searchBar').value);
+        }
+
+        function addMovie() {
+            const t = document.getElementById('mT').value;
+            const i = document.getElementById('mI').value;
+            const v = document.getElementById('mV').value;
+            const c = document.getElementById('mC').value;
+            if(t && i && v) {
+                userMovies.unshift({t, img: i, vid: v, c: c});
+                renderAll();
+                toggleForm();
+                document.getElementById('mT').value = ""; document.getElementById('mI').value = ""; document.getElementById('mV').value = "";
+            } else { alert("Remplis tous les champs !"); }
         }
 
         function playV(url) {
@@ -73,7 +144,7 @@
             if(url.includes("embed") || url.includes("google.com")) {
                 container.innerHTML = `<iframe src="${url}?autoplay=1" style="width:100%; height:85%; border:none;" allowfullscreen></iframe>`;
             } else {
-                container.innerHTML = `<video src="${url}" controls autoplay style="width:100%;"></video>`;
+                container.innerHTML = `<video src="${url}" controls autoplay style="width:100%; max-height:100%;"></video>`;
             }
             document.getElementById('playerOverlay').style.display = 'block';
         }
@@ -81,6 +152,19 @@
         function closeP() { 
             document.getElementById('playerOverlay').style.display = 'none'; 
             document.getElementById('videoContainer').innerHTML = ""; 
+        }
+
+        function toggleForm() { 
+            const f = document.getElementById('adminForm'); 
+            f.style.display = (f.style.display == 'block' ? 'none' : 'block'); 
+            window.scrollTo(0,0); 
+        }
+
+        function deleteM(i) { 
+            if(confirm("Supprimer ce film de ton appareil ?")) { 
+                userMovies.splice(i,1); 
+                renderAll(); 
+            } 
         }
 
         renderAll();
