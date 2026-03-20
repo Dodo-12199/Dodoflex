@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dodoflex | Membres & VIP</title>
+    <title>Dodoflex | Catalogue Complet</title>
     <style>
         :root { --primary: #e50914; --bg: #141414; --gold: #ffd700; }
         body { margin: 0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background: var(--bg); color: white; overflow-x: hidden; }
@@ -25,8 +25,11 @@
         /* Controls */
         .controls { padding: 95px 5% 10px 5%; background: var(--bg); }
         #searchBar { width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #444; background: #222; color: white; margin-bottom: 15px; box-sizing: border-box; outline: none; }
-        .categories { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
-        .cat-btn { background: #333; color: white; border: none; padding: 8px 20px; border-radius: 20px; cursor: pointer; white-space: nowrap; font-size: 0.85rem; }
+        
+        /* Barre des catégories défilante */
+        .categories { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; -ms-overflow-style: none; }
+        .categories::-webkit-scrollbar { display: none; }
+        .cat-btn { background: #333; color: white; border: none; padding: 8px 20px; border-radius: 20px; cursor: pointer; white-space: nowrap; font-size: 0.85rem; transition: 0.3s; }
         .cat-btn.active { background: var(--primary); }
         #btnCatVip { display: none; border: 1px solid var(--gold); color: var(--gold); }
 
@@ -34,7 +37,7 @@
         .content { padding: 10px 5% 50px 5%; }
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
         .card { background: #181818; border-radius: 8px; overflow: hidden; position: relative; height: 230px; cursor: pointer; border: 1px solid #222; }
-        .card img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .card img { width: 100%; height: 100%; object-fit: cover; }
         .card-title { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.85); padding: 8px 0; text-align: center; font-size: 0.8rem; }
         
         /* Badges */
@@ -44,7 +47,7 @@
 
         /* Admin & Player */
         #adminForm { display: none; background: #111; padding: 90px 5% 20px 5%; border-bottom: 2px solid var(--primary); }
-        input, select { width: 100%; padding: 12px; margin: 5px 0; background: #222; color: white; border: 1px solid #333; border-radius: 4px; box-sizing: border-box; }
+        input, select { width: 100%; padding: 12px; margin: 5px 0; background: #222; color: white; border: 1px solid #333; border-radius: 4px; box-sizing: border-box; font-size: 1rem; }
         #playerOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 3000; }
         .close-p { position: absolute; top: 20px; left: 20px; color: white; font-size: 2.5rem; cursor: pointer; z-index: 3100; }
     </style>
@@ -65,32 +68,42 @@
     </nav>
 
     <div id="adminForm">
-        <h3 style="margin:0 0 10px 0; color:var(--primary)">Ajouter un contenu</h3>
+        <h3 style="margin:0 0 10px 0; color:var(--primary)">Nouveau contenu</h3>
         <input type="text" id="mT" placeholder="Titre du film">
-        <input type="text" id="mI" placeholder="Lien de l'image (Affiche)">
-        <input type="text" id="mV" placeholder="Lien de la vidéo (YouTube ou Direct)">
+        <input type="text" id="mI" placeholder="Lien de l'image">
+        <input type="text" id="mV" placeholder="Lien de la vidéo">
         <select id="mC">
-            <option value="Action">Action (Gratuit)</option>
-            <option value="Animé">Animé (Gratuit)</option>
-            <option value="Horreur">Horreur (Gratuit)</option>
-            <option value="VIP">💎 VIP (Réservé)</option>
+            <optgroup label="Gratuit">
+                <option value="Action">Action</option>
+                <option value="Animé">Animé</option>
+                <option value="Horreur">Horreur</option>
+                <option value="Comédie">Comédie</option>
+                <option value="Sci-Fi">Sci-Fi</option>
+                <option value="Séries">Séries</option>
+            </optgroup>
+            <optgroup label="Premium">
+                <option value="VIP">💎 VIP (Code requis)</option>
+            </optgroup>
         </select>
-        <button onclick="addMovie()" style="width:100%; padding:15px; background:var(--primary); color:white; border:none; margin-top:10px; border-radius:5px; font-weight:bold; cursor:pointer;">PUBLIER SUR LE SITE</button>
+        <button onclick="addMovie()" style="width:100%; padding:15px; background:var(--primary); color:white; border:none; margin-top:10px; border-radius:5px; font-weight:bold; cursor:pointer;">PUBLIER</button>
     </div>
 
     <div class="controls">
-        <input type="text" id="searchBar" placeholder="Rechercher un film..." onkeyup="renderAll()">
+        <input type="text" id="searchBar" placeholder="Rechercher..." onkeyup="renderAll()">
         <div class="categories">
             <button class="cat-btn active" onclick="filterCat('Tous', this)">Tous</button>
             <button class="cat-btn" onclick="filterCat('Action', this)">Action</button>
             <button class="cat-btn" onclick="filterCat('Animé', this)">Animé</button>
+            <button class="cat-btn" onclick="filterCat('Horreur', this)">Horreur</button>
+            <button class="cat-btn" onclick="filterCat('Comédie', this)">Comédie</button>
+            <button class="cat-btn" onclick="filterCat('Sci-Fi', this)">Sci-Fi</button>
+            <button class="cat-btn" onclick="filterCat('Séries', this)">Séries</button>
             <button class="cat-btn" id="btnCatVip" onclick="filterCat('VIP', this)">💎 VIP</button>
         </div>
     </div>
 
     <main class="content">
-        <div class="grid" id="movieGrid">
-            </div>
+        <div class="grid" id="movieGrid"></div>
     </main>
 
     <div id="playerOverlay">
@@ -105,13 +118,11 @@
         let userMovies = JSON.parse(localStorage.getItem('dodo_lib')) || [];
         let currentCat = "Tous";
 
-        // 1. GESTION DU GRADE ET DU TEMPS
         function checkVipStatus() {
             const expiry = localStorage.getItem('dodo_vip_expiry');
             if (expiry && new Date().getTime() > parseInt(expiry)) {
                 localStorage.removeItem('dodo_vip_expiry');
                 localStorage.removeItem('dodo_status');
-                alert("Votre accès VIP a expiré.");
                 location.reload();
             }
         }
@@ -120,7 +131,7 @@
             const expiry = localStorage.getItem('dodo_vip_expiry');
             if(expiry) {
                 const hoursLeft = Math.max(0, Math.round((parseInt(expiry) - new Date().getTime()) / 3600000));
-                document.getElementById('userGrade').innerText = `Grade: PRO ✨ (${hoursLeft}h restantes)`;
+                document.getElementById('userGrade').innerText = `Grade: PRO ✨ (${hoursLeft}h)`;
                 document.getElementById('userGrade').classList.add('vip-active');
                 document.getElementById('btnCatVip').style.display = 'block';
                 document.getElementById('vipAction').style.display = 'none';
@@ -128,19 +139,15 @@
         }
 
         function askVip() {
-            const code = prompt("Entrez le code d'activation :");
+            const code = prompt("Code d'activation :");
             if(code === SECRET_CODE) {
                 const expiryTime = new Date().getTime() + (VIP_DURATION_HOURS * 60 * 60 * 1000);
                 localStorage.setItem('dodo_vip_expiry', expiryTime);
                 localStorage.setItem('dodo_status', 'VIP');
-                alert("Félicitations ! Vous êtes maintenant Membre PRO ! ✨");
                 location.reload();
-            } else {
-                alert("Code invalide.");
             }
         }
 
-        // 2. AFFICHAGE DES FILMS
         function renderAll() {
             const grid = document.getElementById('movieGrid');
             const isCurrentlyVip = localStorage.getItem('dodo_status') === 'VIP';
@@ -157,54 +164,39 @@
                     <div class="badge ${m.c === 'VIP' ? 'badge-vip' : 'badge-free'}">
                         ${m.c === 'VIP' ? '💎 VIP' : 'GRATUIT'}
                     </div>
-                    <img src="${m.img}" style="opacity:1">
+                    <img src="${m.img}">
                     <div class="card-title">${m.t}</div>
                 </div>
             `).join('');
         }
 
-        // 3. LECTURE VIDÉO AVEC SÉCURITÉ
         function playV(url, category) {
-            const isCurrentlyVip = localStorage.getItem('dodo_status') === 'VIP';
-            
-            if(category === 'VIP' && !isCurrentlyVip) {
-                alert("⛔ ACCÈS REFUSÉ\nCe film est réservé aux membres PRO ✨.\nCliquez sur 'ACTIVER VIP' et entrez votre code.");
+            if(category === 'VIP' && localStorage.getItem('dodo_status') !== 'VIP') {
+                alert("⛔ ACCÈS VIP REQUIS");
                 return;
             }
-
             const bar = document.getElementById('loaderBar');
             bar.style.width = "100%";
-            
             setTimeout(() => {
                 const container = document.getElementById('videoContainer');
                 let finalUrl = url;
                 if(url.includes("watch?v=")) finalUrl = url.replace("watch?v=", "embed/");
-                
                 container.innerHTML = `<iframe src="${finalUrl}?autoplay=1" style="width:100%; height:85%; border:none;" allowfullscreen></iframe>`;
                 document.getElementById('playerOverlay').style.display = 'block';
                 bar.style.width = "0";
             }, 500);
         }
 
-        // 4. FONCTIONS ADMINISTRATIVES
         function addMovie() {
-            const t = document.getElementById('mT').value, 
-                  i = document.getElementById('mI').value, 
-                  v = document.getElementById('mV').value, 
-                  c = document.getElementById('mC').value;
-            
+            const t = document.getElementById('mT').value, i = document.getElementById('mI').value, v = document.getElementById('mV').value, c = document.getElementById('mC').value;
             if(t && i && v) {
                 userMovies.unshift({t, img: i, vid: v, c});
                 localStorage.setItem('dodo_lib', JSON.stringify(userMovies));
-                renderAll();
-                toggleForm();
-                alert("Film ajouté avec succès !");
-            } else {
-                alert("Veuillez remplir tous les champs.");
+                renderAll(); toggleForm();
             }
         }
 
-        function deleteM(i) { if(confirm("Supprimer ce film ?")) { userMovies.splice(i,1); localStorage.setItem('dodo_lib', JSON.stringify(userMovies)); renderAll(); } }
+        function deleteM(i) { if(confirm("Supprimer ?")) { userMovies.splice(i,1); localStorage.setItem('dodo_lib', JSON.stringify(userMovies)); renderAll(); } }
         function filterCat(cat, btn) {
             currentCat = cat;
             document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
