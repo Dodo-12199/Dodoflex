@@ -3,41 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dodoflex | Premium</title>
+    <title>Dodoflex | Ultimate Player</title>
     <style>
         :root { --primary: #e50914; --bg: #000; --card: #181818; }
         body { margin: 0; font-family: 'Helvetica Neue', Arial, sans-serif; background: var(--bg); color: white; overflow-x: hidden; }
-        
-        .navbar { display: flex; justify-content: space-between; padding: 15px 5%; background: rgba(0,0,0,0.9); align-items: center; position: fixed; width: 90%; z-index: 1000; }
+        .navbar { display: flex; justify-content: space-between; padding: 15px 5%; background: rgba(0,0,0,0.9); align-items: center; position: fixed; width: 100%; z-index: 1000; box-sizing: border-box; }
         .logo { color: var(--primary); font-weight: bold; font-size: 1.5rem; }
-        
-        /* Barre de recherche */
-        .search-container { padding: 80px 5% 10px 5%; background: var(--bg); }
+        .search-container { padding: 85px 5% 10px 5%; background: var(--bg); }
         #searchBar { width: 100%; padding: 12px; border-radius: 5px; border: none; background: #222; color: white; outline: none; font-size: 1rem; box-sizing: border-box; }
-
         .add-btn { background: var(--primary); color: white; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; cursor:pointer; }
-        
-        .slider { width: 100%; height: 40vh; position: relative; overflow: hidden; background: #111; }
-        .slide { position: absolute; width: 100%; height: 100%; opacity: 0; transition: 1s; background-size: cover; background-position: center; display: flex; align-items: flex-end; }
-        .slide.active { opacity: 1; }
-        .slide-content { padding: 40px 5%; background: linear-gradient(transparent, #000); width: 100%; }
-        
         .content { padding: 20px 5%; }
-        h3 { margin-top: 20px; border-left: 4px solid var(--primary); padding-left: 10px; font-size: 1.1rem; }
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        
-        .card { background: var(--card); border-radius: 8px; overflow: hidden; position: relative; height: 220px; cursor: pointer; }
+        .card { background: var(--card); border-radius: 8px; overflow: hidden; position: relative; height: 220px; cursor: pointer; border: 1px solid #222; }
         .card img { width: 100%; height: 100%; object-fit: cover; }
-        .card-actions { position: absolute; top: 10px; right: 10px; display: flex; flex-direction: column; gap: 5px; }
-        .fav-btn { background: rgba(0,0,0,0.6); color: white; border: none; padding: 5px; border-radius: 50%; font-size: 1rem; width: 30px; height: 30px; }
-        .fav-btn.active { color: var(--primary); }
-        .card-title { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.8); padding: 8px 0; text-align: center; font-size: 0.8rem; }
-        
+        .card-actions { position: absolute; top: 8px; right: 8px; display: flex; flex-direction: column; gap: 5px; }
+        .fav-btn { background: rgba(0,0,0,0.7); color: white; border: none; padding: 5px; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-size: 0.9rem; }
+        .card-title { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.85); padding: 8px 0; text-align: center; font-size: 0.8rem; }
         #adminForm { display: none; background: #181818; padding: 20px; border-bottom: 2px solid var(--primary); padding-top: 80px;}
-        input { width: 100%; padding: 10px; margin: 5px 0; background: #222; color: white; border: 1px solid #333; box-sizing: border-box; }
+        input { width: 100%; padding: 12px; margin: 5px 0; background: #222; color: white; border: 1px solid #333; box-sizing: border-box; border-radius: 4px; }
         
-        #playerOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; flex-direction: column; justify-content: center;}
-        .close-p { position: absolute; top: 20px; left: 20px; color: white; font-size: 1.2rem; z-index: 2001; cursor: pointer;}
+        /* OVERLAY PLAYER UNIVERSEL */
+        #playerOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; flex-direction: column; align-items: center; justify-content: center; }
+        .close-p { position: absolute; top: 20px; right: 20px; color: white; font-size: 1.5rem; z-index: 2100; cursor: pointer; background: rgba(255,255,255,0.2); width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+        .video-wrapper { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
@@ -49,60 +37,40 @@
 
     <div id="adminForm">
         <input type="text" id="mT" placeholder="Titre du film">
-        <input type="text" id="mI" placeholder="Lien de l'image">
-        <input type="text" id="mV" placeholder="Lien Vidéo (YouTube ou MP4)">
-        <button onclick="addMovie()" style="width:100%; padding:10px; background:var(--primary); color:white; border:none; margin-top:10px; font-weight:bold;">PUBLIER</button>
+        <input type="text" id="mI" placeholder="Lien de l'image (Affiche)">
+        <input type="text" id="mV" placeholder="Lien Vidéo (YouTube, Twitch, MP4, etc.)">
+        <button onclick="addMovie()" style="width:100%; padding:15px; background:var(--primary); color:white; border:none; margin-top:10px; font-weight:bold; border-radius:5px;">PUBLIER SUR MON SITE</button>
     </div>
 
     <div class="search-container">
-        <input type="text" id="searchBar" placeholder="Rechercher un film..." onkeyup="searchMovies()">
+        <input type="text" id="searchBar" placeholder="Rechercher dans ma bibliothèque..." onkeyup="searchMovies()">
     </div>
-
-    <div class="slider" id="mainSlider"></div>
 
     <main class="content">
         <div id="favoritesSection" style="display:none;">
             <h3>Ma Liste ❤️</h3>
             <div class="grid" id="favGrid"></div>
         </div>
-
-        <h3 id="gridTitle">Nouveautés</h3>
+        <h3 id="gridTitle">Tous les films</h3>
         <div class="grid" id="movieGrid"></div>
     </main>
 
-    <div id="playerOverlay"></div>
+    <div id="playerOverlay">
+        <div class="close-p" onclick="closeP()">✕</div>
+        <div id="videoContainer" class="video-wrapper"></div>
+    </div>
 
     <script>
-        let myLibrary = JSON.parse(localStorage.getItem('dodo_lib')) || [
-            { t: "Exemple Vidéo", img: "https://picsum.photos/400/600", vid: "https://www.w3schools.com/html/mov_bbb.mp4" }
-        ];
+        let myLibrary = JSON.parse(localStorage.getItem('dodo_lib')) || [];
         let myFavs = JSON.parse(localStorage.getItem('dodo_favs')) || [];
 
         function renderAll(data = myLibrary) {
-            // Slider (seulement si on ne recherche pas)
-            const slider = document.getElementById('mainSlider');
-            if(data.length === myLibrary.length) {
-                slider.style.display = "block";
-                slider.innerHTML = myLibrary.slice(0,3).map((m, i) => `
-                    <div class="slide ${i === 0 ? 'active' : ''}" style="background-image: linear-gradient(rgba(0,0,0,0.3), #000), url('${m.img}')">
-                        <div class="slide-content">
-                            <div style="font-size:1.5rem; font-weight:bold;">${m.t}</div>
-                            <button onclick="openP('${m.vid}')" style="margin-top:10px; padding:8px 20px; border:none; border-radius:4px; font-weight:bold; cursor:pointer;">▶ Lecture</button>
-                        </div>
-                    </div>
-                `).join('');
-            } else {
-                slider.style.display = "none";
-            }
-
             renderGrid(data, 'movieGrid');
-
             const favSec = document.getElementById('favoritesSection');
             if(myFavs.length > 0 && data.length === myLibrary.length) {
                 favSec.style.display = "block";
                 renderGrid(myFavs, 'favGrid', true);
             } else { favSec.style.display = "none"; }
-
             localStorage.setItem('dodo_lib', JSON.stringify(myLibrary));
             localStorage.setItem('dodo_favs', JSON.stringify(myFavs));
         }
@@ -116,10 +84,8 @@
                     <div class="card">
                         <img src="${m.img}" onclick="openP('${m.vid}')">
                         <div class="card-actions">
-                            <button class="fav-btn ${isFavorite ? 'active' : ''}" onclick="toggleFav('${m.t}')">
-                                ${isFavorite ? '❤️' : '🤍'}
-                            </button>
-                            ${!isFavGrid ? `<button class="fav-btn" style="font-size:0.7rem;" onclick="deleteMovie(${realIndex})">🗑️</button>` : ''}
+                            <button class="fav-btn" onclick="toggleFav('${m.t}')">${isFavorite ? '❤️' : '🤍'}</button>
+                            ${!isFavGrid ? `<button class="fav-btn" onclick="deleteMovie(${realIndex})">🗑️</button>` : ''}
                         </div>
                         <div class="card-title">${m.t}</div>
                     </div>
@@ -127,10 +93,46 @@
             }).join('');
         }
 
+        function addMovie() {
+            const t = document.getElementById('mT').value;
+            const i = document.getElementById('mI').value;
+            let v = document.getElementById('mV').value;
+
+            // NETTOYAGE AUTOMATIQUE DES LIENS
+            if(v.includes("youtube.com/watch?v=")) v = v.replace("watch?v=", "embed/");
+            if(v.includes("youtu.be/")) v = v.replace("youtu.be/", "youtube.com/embed/");
+            if(v.includes("vimeo.com/")) v = v.replace("vimeo.com/", "player.vimeo.com/video/");
+
+            if(t && i && v) {
+                myLibrary.unshift({ t, img: i, vid: v });
+                renderAll(); toggleForm();
+                document.getElementById('mT').value = ""; document.getElementById('mI').value = ""; document.getElementById('mV').value = "";
+            } else { alert("Remplis toutes les cases !"); }
+        }
+
+        function openP(url) {
+            const container = document.getElementById('videoContainer');
+            const overlay = document.getElementById('playerOverlay');
+            
+            // SI C'EST UN LIEN "EMBED" (YouTube, Vimeo, etc.)
+            if(url.includes("embed") || url.includes("player.")) {
+                container.innerHTML = `<iframe src="${url}?autoplay=1" style="width:100%; height:100%;" allow="autoplay; fullscreen" frameborder="0"></iframe>`;
+            } 
+            // SI C'EST UN FICHIER DIRECT (.mp4, .webm)
+            else {
+                container.innerHTML = `<video src="${url}" controls autoplay style="max-width:100%; max-height:100%;"></video>`;
+            }
+            overlay.style.display = "flex";
+        }
+
+        function closeP() {
+            document.getElementById('playerOverlay').style.display = "none";
+            document.getElementById('videoContainer').innerHTML = "";
+        }
+
         function searchMovies() {
             const term = document.getElementById('searchBar').value.toLowerCase();
             const filtered = myLibrary.filter(m => m.t.toLowerCase().includes(term));
-            document.getElementById('gridTitle').innerText = term === "" ? "Nouveautés" : "Résultats de recherche";
             renderAll(filtered);
         }
 
@@ -146,51 +148,12 @@
             f.style.display = (f.style.display === "block") ? "none" : "block";
         }
 
-        function addMovie() {
-            const t = document.getElementById('mT').value;
-            const i = document.getElementById('mI').value;
-            let v = document.getElementById('mV').value;
-            
-            if(v.includes("youtube.com/watch?v=")) v = v.replace("watch?v=", "embed/");
-            else if(v.includes("youtu.be/")) v = v.replace("youtu.be/", "youtube.com/embed/");
-
-            if(t && i) {
-                myLibrary.unshift({ t, img: i, vid: v });
-                renderAll(); toggleForm();
-                document.getElementById('mT').value = ""; document.getElementById('mI').value = ""; document.getElementById('mV').value = "";
-            }
-        }
-
-        function openP(url) {
-            const playerOverlay = document.getElementById('playerOverlay');
-            if(url.includes("youtube.com/embed/")) {
-                playerOverlay.innerHTML = `<div class="close-p" onclick="closeP()">✕ Retour</div><iframe src="${url}?autoplay=1" style="width:100%; height:80vh; border:none;" allow="autoplay; fullscreen"></iframe>`;
-            } else {
-                playerOverlay.innerHTML = `<div class="close-p" onclick="closeP()">✕ Retour</div><video src="${url}" controls style="width:100%;" autoplay></video>`;
-            }
-            playerOverlay.style.display = "flex";
-        }
-
-        function closeP() {
-            document.getElementById('playerOverlay').style.display = "none";
-            document.getElementById('playerOverlay').innerHTML = "";
-        }
-
         function deleteMovie(i) {
             if(confirm("Supprimer ce film ?")) { myLibrary.splice(i,1); renderAll(); }
         }
-
-        let currentSlide = 0;
-        setInterval(() => {
-            const slides = document.querySelectorAll('.slide');
-            if(slides.length > 1) {
-                slides[currentSlide].classList.remove('active');
-                currentSlide = (currentSlide + 1) % slides.length;
-                slides[currentSlide].classList.add('active');
-            }
-        }, 4000);
 
         renderAll();
     </script>
 </body>
 </html>
+
