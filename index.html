@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dodoflex | Premium</title>
+    <style>
+        :root { --primary: #e50914; --bg: #000; --card: #181818; }
+        body { margin: 0; font-family: 'Helvetica Neue', Arial, sans-serif; background: var(--bg); color: white; overflow-x: hidden; }
+        .navbar { display: flex; justify-content: space-between; padding: 15px 5%; background: rgba(0,0,0,0.9); align-items: center; position: fixed; width: 90%; z-index: 1000; }
+        .logo { color: var(--primary); font-weight: bold; font-size: 1.5rem; }
+        .add-btn { background: var(--primary); color: white; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; cursor:pointer; }
+        .slider { width: 100%; height: 50vh; position: relative; overflow: hidden; background: #111; }
+        .slide { position: absolute; width: 100%; height: 100%; opacity: 0; transition: 1s; background-size: cover; background-position: center; display: flex; align-items: flex-end; }
+        .slide.active { opacity: 1; }
+        .slide-content { padding: 40px 5%; background: linear-gradient(transparent, #000); width: 100%; }
+        .content { padding: 20px 5%; }
+        h3 { margin-top: 30px; border-left: 4px solid var(--primary); padding-left: 10px; font-size: 1.1rem; }
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .card { background: var(--card); border-radius: 8px; overflow: hidden; position: relative; height: 240px; cursor: pointer; }
+        .card img { width: 100%; height: 100%; object-fit: cover; }
+        .card-actions { position: absolute; top: 10px; right: 10px; display: flex; flex-direction: column; gap: 5px; }
+        .fav-btn { background: rgba(0,0,0,0.6); color: white; border: none; padding: 5px; border-radius: 50%; font-size: 1rem; width: 30px; height: 30px; }
+        .fav-btn.active { color: var(--primary); }
+        .card-title { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.8); padding: 8px 0; text-align: center; font-size: 0.8rem; }
+        #adminForm { display: none; background: #181818; padding: 20px; border-bottom: 2px solid var(--primary); padding-top: 80px;}
+        input { width: 100%; padding: 10px; margin: 5px 0; background: #222; color: white; border: 1px solid #333; box-sizing: border-box; }
+        #playerOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; flex-direction: column; justify-content: center;}
+        .close-p { position: absolute; top: 20px; left: 20px; color: white; font-size: 1.2rem; z-index: 2001; cursor: pointer;}
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">DODOFLIX</div>
+        <button class="add-btn" onclick="toggleForm()">+ AJOUTER</button>
+    </nav>
+
+    <div id="adminForm">
+        <input type="text" id="mT" placeholder="Titre du film">
+        <input type="text" id="mI" placeholder="Lien de l'image (Affiche)">
+        <input type="text" id="mV" placeholder="Lien de la vidéo (.mp4)">
+        <button onclick="addMovie()" style="width:100%; padding:10px; background:var(--primary); color:white; border:none; margin-top:10px; font-weight:bold;">PUBLIER</button>
+    </div>
+
+    <div class="slider" id="mainSlider"></div>
+
+    <main class="content">
+        <div id="favoritesSection" style="display:none;">
+            <h3>Ma Liste ❤️</h3>
+            <div class="grid" id="favGrid"></div>
+        </div>
+
+        <h3>Toutes les nouveautés</h3>
+        <div class="grid" id="movieGrid"></div>
+    </main>
+
+    <div id="playerOverlay">
+        <div class="close-p" onclick="closeP()">✕ Retour</div>
+        <video id="vPlayer" controls style="width:100%;"></video>
+    </div>
+
+    <script>
+        // Bibliothèque par défaut
+        let myLibrary = JSON.parse(localStorage.getItem('dodo_lib')) || [
+            { t: "Avatar 2", img: "https://picsum.photos/400/600?v=1", vid: "https://www.w3schools.com/html/mov_bbb.mp4" },
+            { t: "Interstellar", img: "https://picsum.photos/400/600?v=2", vid: "https://www.w3schools.com/html/mov_bbb.mp4" },
+            { t: "The Batman", img: "https://picsum.photos/400/600?v=3", vid: "https://www.w3schools.com/html/mov_bbb.mp4" }
+        ];
+        let myFavs = JSON.parse(localStorage.getItem('dodo_favs')) || [];
+
+        function renderAll() {
+            const slider = document.getElementById('mainSlider');
+            slider.innerHTML = myLibrary.slice(0,3).map((m, i) => `
+                <div class="slide ${i === 0 ? 'active' : ''}" style="background-image: linear-gradient(rgba(0,0,0,0.3), #000), url('${m.img}')">
+                    <div class="slide-content">
+                        <div style="font-size:1.5rem; font-weight:bold;">${m.t}</div>
+                        <button onclick="openP('${m.vid}')" style="margin-top:10px; padding:8px 20px; border:none; border-radius:4px; font-weight:bold; cursor:pointer;">▶ Lecture</button>
+                    </div>
+                </div>
+            `).join('');
+
+            renderGrid(myLibrary, 'movieGrid');
+
+            const favSec = document.getElementById('favoritesSection');
+            if(myFavs.length > 0) {
+                favSec.style.display = "block";
+                renderGrid(myFavs, 'favGrid', true);
+            } else { favSec.style.display = "none"; }
+
+            localStorage.setItem('dodo_lib', JSON.stringify(myLibrary));
+            localStorage.setItem('dodo_favs', JSON.stringify(myFavs));
+        }
+
+        function renderGrid(list, elementId, isFavGrid = false) {
+            const grid = document.getElementById(elementId);
+            grid.innerHTML = list.map((m, i) => {
+                const isFavorite = myFavs.some(f => f.t === m.t);
+                return `
+                    <div class="card">
+                        <img src="${m.img}" onclick="openP('${m.vid}')">
+                        <div class="card-actions">
+                            <button class="fav-btn ${isFavorite ? 'active' : ''}" onclick="toggleFav('${m.t}')">
+                                ${isFavorite ? '❤️' : '🤍'}
+                            </button>
+                            ${!isFavGrid ? `<button class="fav-btn" style="font-size:0.7rem;" onclick="deleteMovie(${i})">🗑️</button>` : ''}
+                        </div>
+                        <div class="card-title">${m.t}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleFav(title) {
+            const index = myFavs.findIndex(f => f.t === title);
+            if(index > -1) { myFavs.splice(index, 1); } 
+            else { const movie = myLibrary.find(m => m.t === title); myFavs.unshift(movie); }
+            renderAll();
+        }
+
+        function toggleForm() { 
+            const f = document.getElementById('adminForm');
+            f.style.display = (f.style.display === "block") ? "none" : "block";
+        }
+
+        function addMovie() {
+            const t = document.getElementById('mT').value;
+            const i = document.getElementById('mI').value;
+            const v = document.getElementById('mV').value;
+            if(t && i) {
+                myLibrary.unshift({ t, img: i, vid: v });
+                renderAll(); toggleForm();
+                document.getElementById('mT').value = "";
+                document.getElementById('mI').value = "";
+                document.getElementById('mV').value = "";
+            }
+        }
+
+        function openP(url) {
+            if(!url) return alert("Pas de vidéo !");
+            document.getElementById('vPlayer').src = url;
+            document.getElementById('playerOverlay').style.display = "flex";
+            document.getElementById('vPlayer').play();
+        }
+
+        function closeP() {
+            document.getElementById('playerOverlay').style.display = "none";
+            document.getElementById('vPlayer').pause();
+        }
+
+        function deleteMovie(i) {
+            if(confirm("Supprimer ?")) { myLibrary.splice(i,1); renderAll(); }
+        }
+
+        let currentSlide = 0;
+        setInterval(() => {
+            const slides = document.querySelectorAll('.slide');
+            if(slides.length > 1) {
+                slides[currentSlide].classList.remove('active');
+                currentSlide = (currentSlide + 1) % slides.length;
+                slides[currentSlide].classList.add('active');
+            }
+        }, 4000);
+
+        renderAll();
+    </script>
+</body>
+</html>
