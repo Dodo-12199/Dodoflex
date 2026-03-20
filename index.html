@@ -8,7 +8,7 @@
         :root { --primary: #e50914; --bg: #000; --card-bg: #141414; --gold: #ffd700; }
         body { margin: 0; background: var(--bg); color: white; font-family: 'Helvetica Neue', Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        /* Navbar (Interface Originale) */
+        /* Navbar */
         .nav { display: flex; justify-content: space-between; padding: 20px 5%; align-items: center; position: sticky; top: 0; background: rgba(0,0,0,0.9); z-index: 1000; }
         .logo-box { display: flex; flex-direction: column; }
         .logo { color: var(--primary); font-weight: bold; font-size: 1.5rem; letter-spacing: 1px; text-decoration: none; }
@@ -18,20 +18,20 @@
 
         .btn-plus { background: var(--primary); color: white; border: none; width: 35px; height: 35px; border-radius: 5px; font-weight: bold; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
-        /* Panel Admin (Interface Originale) */
+        /* Panel Admin */
         #admin { display: none; background: #1a1a1a; padding: 20px 5%; border-bottom: 2px solid var(--primary); }
         .admin-box { border: 1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: #222; }
         h3 { margin: 0 0 10px 0; font-size: 0.8rem; color: var(--primary); text-transform: uppercase; }
         input, select { width: 100%; padding: 12px; margin: 8px 0; background: #333; color: white; border: 1px solid #444; border-radius: 5px; box-sizing: border-box; font-size: 16px; outline: none; }
 
-        /* Hero (Interface Originale) */
+        /* Hero */
         .hero { padding: 80px 5% 40px 5%; background-size: cover; background-position: center; min-height: 350px; display: flex; flex-direction: column; justify-content: flex-end; position: relative; }
         .hero::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent, var(--bg)); }
         .hero-content { position: relative; z-index: 2; }
         .hero h1 { font-size: 2.5rem; margin: 0; text-shadow: 2px 2px 15px rgba(0,0,0,1); }
         .btn-play { background: white; color: black; border: none; padding: 12px 30px; border-radius: 4px; font-weight: bold; margin-top: 20px; width: fit-content; font-size: 1.1rem; cursor: pointer; }
 
-        /* Grille & Filtres (Interface Originale) */
+        /* Filtres & Grille */
         .search-area { padding: 20px 5% 0 5%; }
         #search { width: 100%; padding: 15px; border-radius: 8px; border: 1px solid #333; background: #141414; color: white; box-sizing: border-box; }
         .cats { display: flex; gap: 10px; padding: 15px 5%; overflow-x: auto; scrollbar-width: none; }
@@ -51,12 +51,6 @@
 <body>
 
     <div id="admin">
-        <div class="admin-box">
-            <h3>🔑 Codes VIP</h3>
-            <input type="text" id="newVipCode" placeholder="Créer un code VIP">
-            <button onclick="generateCode()" style="width:100%; padding:10px; background:var(--gold); color:black; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">ENREGISTRER LE CODE</button>
-            <p id="adminStatus" style="font-size:0.7rem; color:lime; margin-top:5px; display:none;">✅ Code prêt à l'emploi !</p>
-        </div>
         <div class="admin-box">
             <h3>🎬 Ajouter un Film</h3>
             <input type="text" id="t" placeholder="Titre">
@@ -104,15 +98,20 @@
     </div>
 
     <script>
+        // --- CONFIGURATION ADMIN ---
         const PASS_ADMIN = "D121028.";
-        const MASTER_VIP = "12199";
-
-        const DEFAUT = [
-            {t: "Big Buck Bunny", i: "https://upload.wikimedia.org/wikipedia/commons/c/c5/Big_buck_bunny_poster_big.jpg", v: "https://www.youtube.com/embed/aqz-KE-bpKQ", c: "Action"},
-            {t: "Sintel", i: "https://upload.wikimedia.org/wikipedia/commons/d/df/Sintel_poster.jpg", v: "https://www.youtube.com/embed/eRsGyueVLvQ", c: "Animé"}
+        const MASTER_VIP = "12199"; 
+        
+        // --- LISTE DES CODES TEMPORAIRES (À MODIFIER ICI) ---
+        const CODES_VIP = [
+            { code: "Dodo1234", expire: "2026-03-21 20:00" }, // Expire le 21 mars à 20h
+            { code: "TEST-1H", expire: "2026-03-20 19:30" }
         ];
 
         let currentCat = "Tous";
+        const DEFAUT = [
+            {t: "Big Buck Bunny", i: "https://upload.wikimedia.org/wikipedia/commons/c/c5/Big_buck_bunny_poster_big.jpg", v: "https://www.youtube.com/embed/aqz-KE-bpKQ", c: "Action"}
+        ];
 
         function checkStatus() {
             if(localStorage.getItem('isVip') === 'true') {
@@ -123,29 +122,33 @@
             }
         }
 
-        // --- CORRECTION SYSTEME VIP ---
-        function generateCode() {
-            const val = document.getElementById('newVipCode').value.trim();
-            if(val) {
-                let codes = JSON.parse(localStorage.getItem('vip_codes_database')) || [];
-                codes.push(val);
-                localStorage.setItem('vip_codes_database', JSON.stringify(codes));
-                document.getElementById('newVipCode').value = "";
-                document.getElementById('adminStatus').style.display = "block";
-                setTimeout(() => { document.getElementById('adminStatus').style.display = "none"; }, 2000);
-            }
-        }
-
         function activateVip() {
             const input = prompt("Code VIP :");
             if(!input) return;
-            let dbCodes = JSON.parse(localStorage.getItem('vip_codes_database')) || [];
-            
-            if(input === MASTER_VIP || dbCodes.includes(input)) {
+
+            // 1. Vérifier si c'est le code maître
+            if(input === MASTER_VIP) {
                 localStorage.setItem('isVip', 'true');
-                alert("Compte passé en PRO ✨");
-                checkStatus();
-            } else { alert("Code invalide."); }
+                alert("Compte PRO activé (Illimité)");
+                return checkStatus();
+            }
+
+            // 2. Vérifier les codes temporaires
+            const found = CODES_VIP.find(c => c.code === input);
+            if(found) {
+                const maintenant = new Date();
+                const expiration = new Date(found.expire);
+
+                if(maintenant < expiration) {
+                    localStorage.setItem('isVip', 'true');
+                    alert("VIP Validé ! Expire le : " + found.expire);
+                    checkStatus();
+                } else {
+                    alert("Désolé, ce code a expiré le " + found.expire);
+                }
+            } else {
+                alert("Code invalide.");
+            }
         }
 
         function render() {
