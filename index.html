@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dodoflex | Version Pro</title>
+    <title>Dodoflex | Version Ultimate</title>
     <style>
         :root { --primary: #e50914; --bg: #141414; --gold: #ffd700; }
         body { margin: 0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background: var(--bg); color: white; overflow-x: hidden; }
@@ -19,7 +19,7 @@
         .btn-admin { background: #333; color: white; border: none; padding: 8px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; }
 
         /* Hero Banner */
-        .hero { position: relative; width: 100%; height: 55vh; background-size: cover; background-position: center; display: flex; align-items: flex-end; padding: 0 5% 40px 5%; box-sizing: border-box; background-color: #222; transition: 0.5s; }
+        .hero { position: relative; width: 100%; height: 55vh; background-size: cover; background-position: center; display: flex; align-items: flex-end; padding: 0 5% 40px 5%; box-sizing: border-box; background-color: #222; }
         .hero::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(0deg, var(--bg) 15%, transparent 100%); }
         .hero-content { position: relative; z-index: 10; width: 100%; }
         .hero-title { font-size: 2.2rem; font-weight: bold; margin-bottom: 15px; text-shadow: 2px 2px 10px rgba(0,0,0,0.8); }
@@ -34,7 +34,7 @@
 
         /* Grid & Controls */
         .controls { padding: 25px 5% 10px 5%; background: var(--bg); }
-        #searchBar { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid #444; background: #222; color: white; margin-bottom: 20px; box-sizing: border-box; }
+        #searchBar { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid #444; background: #222; color: white; margin-bottom: 20px; box-sizing: border-box; outline: none; }
         .categories { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 15px; scrollbar-width: none; }
         .cat-btn { background: #2a2a2a; color: white; border: none; padding: 8px 22px; border-radius: 20px; cursor: pointer; white-space: nowrap; font-size: 0.9rem; }
         .cat-btn.active { background: var(--primary); font-weight: bold; }
@@ -66,8 +66,15 @@
     <div id="adminPanel">
         <div class="admin-box">
             <h3>🔑 Générateur de Codes</h3>
-            <input type="text" id="newCode" placeholder="Nom du code (ex: SUP-24)">
-            <input type="number" id="newDuration" placeholder="Heures de validité">
+            <input type="text" id="newCode" placeholder="Nom du code (ex: TEST-10)">
+            <div style="display: flex; gap: 5px;">
+                <input type="number" id="newDuration" placeholder="Quantité" style="flex: 2;">
+                <select id="durationUnit" style="flex: 1.5;">
+                    <option value="60000">Minutes</option>
+                    <option value="3600000">Heures</option>
+                    <option value="86400000">Jours</option>
+                </select>
+            </div>
             <button class="btn-save" style="background: var(--gold); color: black;" onclick="generateCode()">CRÉER LE CODE</button>
             <div id="codeStatus" style="font-size: 0.8rem; margin-top: 10px; color: #0f0; font-weight: bold;"></div>
         </div>
@@ -83,19 +90,19 @@
                 <option value="Horreur">Horreur</option>
                 <option value="VIP">💎 VIP</option>
             </select>
-            <button class="btn-save" onclick="addMovie()">PUBLIER MAINTENANT</button>
+            <button class="btn-save" onclick="addMovie()">PUBLIER</button>
         </div>
     </div>
 
     <header id="heroSection" class="hero">
         <div class="hero-content">
-            <h1 class="hero-title" id="heroTitle">Dodoflex Original</h1>
+            <h1 class="hero-title" id="heroTitle">Bienvenue sur Dodoflex</h1>
             <button class="btn-play-hero" id="heroBtn">▶ Lancer</button>
         </div>
     </header>
 
     <div class="controls">
-        <input type="text" id="searchBar" placeholder="Rechercher un titre..." onkeyup="renderAll()">
+        <input type="text" id="searchBar" placeholder="Rechercher..." onkeyup="renderAll()">
         <div class="categories">
             <button class="cat-btn active" onclick="filterCat('Tous', this)">Tous</button>
             <button class="cat-btn" onclick="filterCat('Action', this)">Action</button>
@@ -116,43 +123,45 @@
         let customCodes = JSON.parse(localStorage.getItem('dodo_codes')) || {}; 
         let currentCat = "Tous";
 
-        // GESTION VIP ET CODES
         function generateCode() {
             const code = document.getElementById('newCode').value.trim();
-            const hours = document.getElementById('newDuration').value;
-            if(code && hours) {
-                customCodes[code] = parseInt(hours);
+            const quantity = document.getElementById('newDuration').value;
+            const unitMs = document.getElementById('durationUnit').value;
+            
+            if(code && quantity) {
+                // On stocke la durée totale en millisecondes
+                customCodes[code] = quantity * unitMs;
                 localStorage.setItem('dodo_codes', JSON.stringify(customCodes));
-                document.getElementById('codeStatus').innerText = `✅ Code "${code}" (${hours}h) prêt !`;
+                
+                const unitText = document.getElementById('durationUnit').options[document.getElementById('durationUnit').selectedIndex].text;
+                document.getElementById('codeStatus').innerText = `✅ Code "${code}" (${quantity} ${unitText}) créé !`;
                 document.getElementById('newCode').value = "";
                 document.getElementById('newDuration').value = "";
             }
         }
 
         function askVip() {
-            const input = prompt("Entrez votre code d'accès :");
+            const input = prompt("Code d'activation :");
             if(!input) return;
             
             if(customCodes[input]) {
-                const duration = customCodes[input];
-                const expiry = new Date().getTime() + (duration * 60 * 60 * 1000);
+                const durationMs = customCodes[input];
+                const expiry = new Date().getTime() + durationMs;
                 localStorage.setItem('dodo_vip_expiry', expiry);
                 localStorage.setItem('dodo_status', 'VIP');
-                alert("✨ Mode PRO activé ! Profitez bien.");
+                alert("✨ Accès VIP activé !");
                 location.reload();
             } else if (input === "12199") {
                 localStorage.setItem('dodo_status', 'VIP');
                 location.reload();
             } else {
-                alert("Code invalide.");
+                alert("Code incorrect.");
             }
         }
 
         function checkVipExpiry() {
             const expiry = localStorage.getItem('dodo_vip_expiry');
-            const status = localStorage.getItem('dodo_status');
-            
-            if (status === 'VIP' && expiry) {
+            if (localStorage.getItem('dodo_status') === 'VIP' && expiry) {
                 if (new Date().getTime() > parseInt(expiry)) {
                     localStorage.removeItem('dodo_vip_expiry');
                     localStorage.removeItem('dodo_status');
@@ -160,15 +169,13 @@
                     location.reload();
                 }
             }
-
-            if(status === 'VIP') {
+            if(localStorage.getItem('dodo_status') === 'VIP') {
                 document.getElementById('userGrade').innerText = "Grade: PRO ✨";
                 document.getElementById('userGrade').classList.add('vip-active');
                 document.getElementById('vipAction').style.display = 'none';
             }
         }
 
-        // AFFICHAGE
         function renderAll() {
             const grid = document.getElementById('movieGrid');
             const search = document.getElementById('searchBar').value.toLowerCase();
@@ -207,8 +214,7 @@
 
         function playV(url, cat) {
             if(cat === 'VIP' && localStorage.getItem('dodo_status') !== 'VIP') {
-                alert("🔒 Cet espace est réservé aux membres PRO !"); 
-                return;
+                alert("🔒 Réservé aux membres PRO !"); return;
             }
             const container = document.getElementById('videoContainer');
             let fUrl = url.includes("watch?v=") ? url.replace("watch?v=", "embed/") : url;
@@ -220,14 +226,16 @@
             const p = document.getElementById('adminPanel');
             p.style.display = (p.style.display === 'block' ? 'none' : 'block');
         }
+
         function filterCat(cat, btn) {
             currentCat = cat;
             document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             renderAll();
         }
+
         function closeP() { document.getElementById('playerOverlay').style.display = 'none'; document.getElementById('videoContainer').innerHTML = ""; }
-        function deleteM(i) { if(confirm("Supprimer ce contenu ?")) { userMovies.splice(i,1); localStorage.setItem('dodo_lib', JSON.stringify(userMovies)); renderAll(); } }
+        function deleteM(i) { if(confirm("Supprimer ?")) { userMovies.splice(i,1); localStorage.setItem('dodo_lib', JSON.stringify(userMovies)); renderAll(); } }
 
         checkVipExpiry();
         renderAll();
