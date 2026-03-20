@@ -8,67 +8,69 @@
         :root { --primary: #e50914; --bg: #141414; }
         body { margin: 0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background: var(--bg); color: white; overflow-x: hidden; }
 
-        /* Barre de navigation */
+        /* Navbar */
         .navbar { display: flex; justify-content: space-between; padding: 15px 5%; background: #000; position: fixed; width: 100%; z-index: 1000; box-sizing: border-box; align-items: center; border-bottom: 1px solid #333; }
-        .logo { color: var(--primary); font-weight: bold; font-size: 1.5rem; letter-spacing: -1px; text-shadow: 0 0 10px rgba(229, 9, 20, 0.5); }
-        
-        .nav-btns { display: flex; gap: 10px; align-items: center; }
-        .btn-add { background: var(--primary); color: white; border: none; padding: 8px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.8rem; }
-        .btn-share { background: #333; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 1.1rem; }
+        .logo { color: var(--primary); font-weight: bold; font-size: 1.5rem; letter-spacing: -1px; text-shadow: 0 0 10px rgba(229, 9, 20, 0.4); }
+        .nav-btns { display: flex; gap: 10px; }
+        .btn-add { background: var(--primary); color: white; border: none; padding: 8px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        .btn-share { background: #333; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; }
 
-        /* Message "Copié" */
-        #copyToast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--primary); color: white; padding: 10px 20px; border-radius: 30px; font-size: 0.9rem; font-weight: bold; display: none; z-index: 3000; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        /* Barre de chargement Netflix style */
+        #loaderBar { position: fixed; top: 0; left: 0; height: 3px; background: var(--primary); width: 0; z-index: 2000; transition: width 0.4s ease; }
 
-        /* Zone de Recherche et Filtres */
+        /* Controls */
         .controls { padding: 90px 5% 10px 5%; background: var(--bg); }
-        #searchBar { width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #444; background: #222; color: white; margin-bottom: 15px; box-sizing: border-box; font-size: 1rem; outline: none; }
-        
+        #searchBar { width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #444; background: #222; color: white; margin-bottom: 15px; box-sizing: border-box; outline: none; }
         .categories { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
         .categories::-webkit-scrollbar { display: none; }
-        .cat-btn { background: #333; color: white; border: none; padding: 8px 20px; border-radius: 20px; cursor: pointer; white-space: nowrap; font-size: 0.9rem; }
+        .cat-btn { background: #333; color: white; border: none; padding: 8px 20px; border-radius: 20px; cursor: pointer; white-space: nowrap; }
         .cat-btn.active { background: var(--primary); }
 
-        /* Grille des films */
+        /* Grille et Skeleton */
         .content { padding: 10px 5% 50px 5%; }
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        .card { background: #181818; border-radius: 8px; overflow: hidden; position: relative; height: 240px; cursor: pointer; border: 1px solid #222; transition: 0.3s; }
-        .card img { width: 100%; height: 100%; object-fit: cover; }
-        .card-title { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.85); padding: 10px 0; text-align: center; font-size: 0.85rem; font-weight: bold; }
-
-        /* Formulaire */
-        #adminForm { display: none; background: #111; padding: 90px 5% 30px 5%; border-bottom: 3px solid var(--primary); }
-        input, select { width: 100%; padding: 14px; margin: 8px 0; background: #222; color: white; border: 1px solid #444; border-radius: 5px; box-sizing: border-box; }
         
+        .card { background: #181818; border-radius: 8px; overflow: hidden; position: relative; height: 240px; cursor: pointer; border: 1px solid #222; }
+        .card img { width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.5s; }
+        .card-title { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.8); padding: 8px 0; text-align: center; font-size: 0.8rem; }
+
+        /* Animation Squelette */
+        .skeleton { background: linear-gradient(90deg, #1a1a1a 25%, #252525 50%, #1a1a1a 75%); background-size: 200% 100%; animation: loading 1.5s infinite; }
+        @keyframes loading { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
         /* Player */
-        #playerOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; }
-        .close-p { position: absolute; top: 25px; left: 25px; color: white; font-size: 2.5rem; cursor: pointer; z-index: 2101; }
+        #playerOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 3000; }
+        .close-p { position: absolute; top: 20px; left: 20px; color: white; font-size: 2.5rem; cursor: pointer; z-index: 3100; }
+        
+        #adminForm { display: none; background: #111; padding: 90px 5% 20px 5%; border-bottom: 2px solid var(--primary); }
+        input, select { width: 100%; padding: 12px; margin: 5px 0; background: #222; color: white; border: 1px solid #333; border-radius: 4px; box-sizing: border-box; }
+        #copyToast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--primary); padding: 10px 20px; border-radius: 20px; display: none; z-index: 4000; }
     </style>
 </head>
 <body>
 
+    <div id="loaderBar"></div>
+    <div id="copyToast">Lien copié ! 🚀</div>
+
     <nav class="navbar">
         <div class="logo">DODOFLEX</div>
         <div class="nav-btns">
-            <button class="btn-share" onclick="shareSite()" title="Partager">🔗</button>
+            <button class="btn-share" onclick="shareSite()">🔗</button>
             <button class="btn-add" onclick="toggleForm()">+ AJOUTER</button>
         </div>
     </nav>
 
-    <div id="copyToast">Lien copié ! 🚀</div>
-
     <div id="adminForm">
-        <h2 style="margin-top:0; color:var(--primary);">Nouveau Film</h2>
         <input type="text" id="mT" placeholder="Titre">
-        <input type="text" id="mI" placeholder="Lien Image URL">
-        <input type="text" id="mV" placeholder="Lien Vidéo">
+        <input type="text" id="mI" placeholder="URL Image">
+        <input type="text" id="mV" placeholder="URL Vidéo">
         <select id="mC">
             <option value="Tous">Catégorie</option>
             <option value="Action">Action</option>
             <option value="Horreur">Horreur</option>
             <option value="Animé">Animé</option>
-            <option value="Comédie">Comédie</option>
         </select>
-        <button onclick="addMovie()" style="width:100%; padding:15px; background:var(--primary); color:white; border:none; margin-top:10px; font-weight:bold; border-radius:5px; cursor:pointer;">PUBLIER</button>
+        <button onclick="addMovie()" style="width:100%; padding:15px; background:var(--primary); color:white; border:none; margin-top:10px; border-radius:5px; font-weight:bold;">PUBLIER</button>
     </div>
 
     <div class="controls">
@@ -78,17 +80,21 @@
             <button class="cat-btn" onclick="filterCat('Action', this)">Action</button>
             <button class="cat-btn" onclick="filterCat('Horreur', this)">Horreur</button>
             <button class="cat-btn" onclick="filterCat('Animé', this)">Animé</button>
-            <button class="cat-btn" onclick="filterCat('Comédie', this)">Comédie</button>
         </div>
     </div>
 
     <main class="content">
-        <div class="grid" id="movieGrid"></div>
+        <div class="grid" id="movieGrid">
+            <div class="card skeleton"></div>
+            <div class="card skeleton"></div>
+            <div class="card skeleton"></div>
+            <div class="card skeleton"></div>
+        </div>
     </main>
 
     <div id="playerOverlay">
         <div class="close-p" onclick="closeP()">✕</div>
-        <div id="videoContainer" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;"></div>
+        <div id="videoContainer" style="width:100%; height:100%; display:flex; align-items:center;"></div>
     </div>
 
     <script>
@@ -97,30 +103,54 @@
 
         function renderAll(searchTerm = "") {
             const grid = document.getElementById('movieGrid');
-            const allMovies = [...userMovies]; 
             
-            const filtered = allMovies.filter(m => {
-                const matchSearch = m.t.toLowerCase().includes(searchTerm.toLowerCase());
-                const matchCat = (currentCat === "Tous" || m.c === currentCat);
-                return matchSearch && matchCat;
-            });
+            // On simule un petit temps de chargement pour voir le squelette
+            setTimeout(() => {
+                const filtered = userMovies.filter(m => {
+                    const matchS = m.t.toLowerCase().includes(searchTerm.toLowerCase());
+                    const matchC = (currentCat === "Tous" || m.c === currentCat);
+                    return matchS && matchC;
+                });
 
-            grid.innerHTML = filtered.map((m, i) => `
-                <div class="card" onclick="playV('${m.vid}')" oncontextmenu="deleteM(${i}); return false;">
-                    <img src="${m.img}">
-                    <div class="card-title">${m.t}</div>
-                </div>
-            `).join('');
-            localStorage.setItem('dodo_lib', JSON.stringify(userMovies));
+                if(filtered.length === 0 && searchTerm === "" && currentCat === "Tous") {
+                    grid.innerHTML = "<p style='color:gray'>Aucun film. Ajoute ton premier contenu !</p>";
+                    return;
+                }
+
+                grid.innerHTML = filtered.map((m, i) => `
+                    <div class="card" onclick="playV('${m.vid}')" oncontextmenu="deleteM(${i}); return false;">
+                        <img src="${m.img}" onload="this.style.opacity=1">
+                        <div class="card-title">${m.t}</div>
+                    </div>
+                `).join('');
+                localStorage.setItem('dodo_lib', JSON.stringify(userMovies));
+            }, 500); // 0.5 seconde de délai pour l'effet visuel
         }
 
-        // FONCTION PARTAGE
+        function playV(url) {
+            // Effet barre de chargement rouge
+            const bar = document.getElementById('loaderBar');
+            bar.style.width = "100%";
+            
+            setTimeout(() => {
+                const container = document.getElementById('videoContainer');
+                if(url.includes("watch?v=")) url = url.replace("watch?v=", "embed/");
+                if(url.includes("youtu.be/")) url = url.replace("youtu.be/", "youtube.com/embed/");
+                
+                container.innerHTML = (url.includes("embed") || url.includes("google.com")) ? 
+                    `<iframe src="${url}?autoplay=1" style="width:100%; height:85%; border:none;" allowfullscreen></iframe>` : 
+                    `<video src="${url}" controls autoplay style="width:100%;"></video>`;
+                
+                document.getElementById('playerOverlay').style.display = 'block';
+                bar.style.width = "0"; // Reset la barre
+            }, 800);
+        }
+
         function shareSite() {
-            const url = window.location.href;
-            navigator.clipboard.writeText(url).then(() => {
-                const toast = document.getElementById('copyToast');
-                toast.style.display = 'block';
-                setTimeout(() => { toast.style.display = 'none'; }, 2000);
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                const t = document.getElementById('copyToast');
+                t.style.display = 'block';
+                setTimeout(() => t.style.display = 'none', 2000);
             });
         }
 
@@ -133,32 +163,20 @@
         }
 
         function addMovie() {
-            const t = document.getElementById('mT').value;
-            const i = document.getElementById('mI').value;
-            const v = document.getElementById('mV').value;
-            const c = document.getElementById('mC').value;
+            const t = document.getElementById('mT').value, i = document.getElementById('mI').value, v = document.getElementById('mV').value, c = document.getElementById('mC').value;
             if(t && i && v) {
-                userMovies.unshift({t, img: i, vid: v, c: c});
+                userMovies.unshift({t, img: i, vid: v, c});
                 renderAll(); toggleForm();
                 document.getElementById('mT').value = ""; document.getElementById('mI').value = ""; document.getElementById('mV').value = "";
             }
         }
 
-        function playV(url) {
-            const container = document.getElementById('videoContainer');
-            if(url.includes("watch?v=")) url = url.replace("watch?v=", "embed/");
-            if(url.includes("youtu.be/")) url = url.replace("youtu.be/", "youtube.com/embed/");
-            container.innerHTML = (url.includes("embed") || url.includes("google.com")) ? 
-                `<iframe src="${url}?autoplay=1" style="width:100%; height:85%; border:none;" allowfullscreen></iframe>` : 
-                `<video src="${url}" controls autoplay style="width:100%;"></video>`;
-            document.getElementById('playerOverlay').style.display = 'block';
-        }
-
         function closeP() { document.getElementById('playerOverlay').style.display = 'none'; document.getElementById('videoContainer').innerHTML = ""; }
-        function toggleForm() { const f = document.getElementById('adminForm'); f.style.display = (f.style.display == 'block' ? 'none' : 'block'); window.scrollTo(0,0); }
+        function toggleForm() { const f = document.getElementById('adminForm'); f.style.display = (f.style.display == 'block' ? 'none' : 'block'); }
         function deleteM(i) { if(confirm("Supprimer ?")) { userMovies.splice(i,1); renderAll(); } }
 
         renderAll();
     </script>
 </body>
 </html>
+
