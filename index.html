@@ -18,21 +18,21 @@
         .btn-vip { background: transparent; color: var(--gold); border: 1px solid var(--gold); padding: 6px 14px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; font-weight: bold; }
         .btn-admin { background: #333; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 1.1rem; }
 
-        /* Hero */
+        /* Hero Banner */
         .hero { position: relative; width: 100%; height: 55vh; background-size: cover; background-position: center; display: flex; align-items: flex-end; padding: 0 5% 50px 5%; box-sizing: border-box; background-color: #222; transition: 0.5s; }
         .hero::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(0deg, var(--bg) 10%, transparent 100%); }
         .hero-content { position: relative; z-index: 10; width: 100%; }
         .hero-title { font-size: 2.2rem; font-weight: bold; margin-bottom: 15px; text-shadow: 2px 2px 15px rgba(0,0,0,0.9); }
         .btn-play-hero { background: white; color: black; border: none; padding: 12px 35px; border-radius: 4px; font-weight: bold; cursor: pointer; }
 
-        /* Admin */
+        /* Admin Panel */
         #adminPanel { display: none; background: #111; padding: 100px 5% 20px 5%; border-bottom: 2px solid var(--primary); }
         .admin-box { background: #1a1a1a; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #333; }
         h3 { margin: 0 0 12px 0; color: var(--primary); font-size: 0.85rem; text-transform: uppercase; }
         input, select { width: 100%; padding: 12px; margin: 6px 0; background: #222; color: white; border: 1px solid #333; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
         .btn-save { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
 
-        /* Grid */
+        /* Grid & Filters */
         .controls { padding: 30px 5% 10px 5%; background: var(--bg); }
         #searchBar { width: 100%; padding: 15px; border-radius: 8px; border: 1px solid #444; background: #222; color: white; margin-bottom: 20px; box-sizing: border-box; outline: none; }
         .categories { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 15px; scrollbar-width: none; }
@@ -96,7 +96,7 @@
 
     <header id="heroSection" class="hero">
         <div class="hero-content">
-            <h1 class="hero-title" id="heroTitle">Chargement...</h1>
+            <h1 class="hero-title" id="heroTitle">Bienvenue</h1>
             <button class="btn-play-hero" id="heroBtn">▶ Lancer</button>
         </div>
     </header>
@@ -123,23 +123,21 @@
            ZONE ADMIN : À MODIFIER SUR GITHUB
         ========================================== */
         
-        const ADMIN_PASSWORD = "D121028"; // Ton mot de passe pour ouvrir ⚙️
+        const ADMIN_PASSWORD = "D121028."; 
 
-        // Films visibles par TOUT LE MONDE
         const GLOBAL_MOVIES = [
             { t: "Big Buck Bunny", img: "https://upload.wikimedia.org/wikipedia/commons/c/c5/Big_buck_bunny_poster_big.jpg", vid: "https://www.youtube.com/watch?v=aqz-KE-bpKQ", c: "Action" },
             { t: "Sintel", img: "https://durian.blender.org/wp-content/uploads/2010/10/sintel-poster.jpg", vid: "https://www.youtube.com/watch?v=eRsGyueVLvQ", c: "Animé" },
             { t: "Tears of Steel (Exclu VIP)", img: "https://mango.blender.org/wp-content/uploads/2012/09/TOS_poster_lowres.jpg", vid: "https://www.youtube.com/watch?v=R6MlUcmOul8", c: "VIP" }
         ];
 
-        // Codes VIP valables pour TOUT LE MONDE
         const GLOBAL_CODES = {
-            "VIP-24H": 86400000,   // Un code de 24h
-            "DODO-2026": 2592000000 // Un code de 30 jours
+            "VIP-24H": 86400000,
+            "DODO-2026": 2592000000 
         };
 
         /* ==========================================
-           LOGIQUE DU SITE (NE PAS TOUCHER SI POSSIBLE)
+           LOGIQUE DU SITE
         ========================================== */
 
         let storedMovies = JSON.parse(localStorage.getItem('dodo_lib')) || [];
@@ -147,7 +145,7 @@
         let currentCat = "Tous";
 
         function openAdmin() {
-            const p = prompt("Mot de passe :");
+            const p = prompt("Mot de passe Admin :");
             if(p === ADMIN_PASSWORD) {
                 const panel = document.getElementById('adminPanel');
                 panel.style.display = (panel.style.display === 'block' ? 'none' : 'block');
@@ -168,12 +166,10 @@
         function askVip() {
             const input = prompt("Entrez votre code VIP :");
             if(!input) return;
-
             let duration = GLOBAL_CODES[input] || localCodes[input];
-
             if(duration) {
                 const expiry = new Date().getTime() + duration;
-                if(localCodes[input]) { // Si c'est un code local, on l'efface
+                if(localCodes[input]) {
                     delete localCodes[input];
                     localStorage.setItem('dodo_codes', JSON.stringify(localCodes));
                 }
@@ -209,23 +205,25 @@
             const allMovies = [...storedMovies, ...GLOBAL_MOVIES];
             
             if(allMovies.length > 0) {
-                const last = allMovies[0];
-                document.getElementById('heroSection').style.backgroundImage = `url('${last.img}')`;
-                document.getElementById('heroTitle').innerText = last.t;
-                document.getElementById('heroBtn').onclick = () => playV(last.vid, last.c);
+                const head = allMovies[0]; // Le dernier ajouté localement ou le 1er global
+                document.getElementById('heroSection').style.backgroundImage = `url('${head.img}')`;
+                document.getElementById('heroTitle').innerText = head.t;
+                document.getElementById('heroBtn').onclick = () => playV(head.vid, head.c);
             }
 
             const filtered = allMovies.filter(m => {
                 return (currentCat === "Tous" || m.c === currentCat) && m.t.toLowerCase().includes(search);
             });
 
-            grid.innerHTML = filtered.map((m, i) => `
+            grid.innerHTML = filtered.map((m, i) => {
+                const realIndex = i; 
+                return `
                 <div class="card" onclick="playV('${m.vid}', '${m.c}')" oncontextmenu="deleteM(${i}); return false;">
                     ${m.c === 'VIP' ? '<div class="badge-vip">💎 VIP</div>' : ''}
                     <img src="${m.img}" loading="lazy">
                     <div class="card-title">${m.t}</div>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
         function addMovieLocal() {
@@ -242,28 +240,10 @@
                 alert("Accès réservé aux membres PRO !"); return;
             }
             const container = document.getElementById('videoContainer');
-            let fUrl = url.includes("watch?v=") ? url.replace("watch?v=", "embed/") : url;
-            container.innerHTML = `<iframe src="${fUrl}?autoplay=1&mute=0" style="width:100%; height:85%; border:none;" allowfullscreen allow="autoplay"></iframe>`;
+            let fUrl = url;
+            if(url.includes("youtube.com/watch?v=")) fUrl = url.replace("watch?v=", "embed/");
+            if(url.includes("youtu.be/")) fUrl = url.replace("youtu.be/", "youtube.com/embed/");
+            
+            container.innerHTML = `<iframe src="${fUrl}?autoplay=1" style="width:100%; height:85%; border:none;" allowfullscreen allow="autoplay"></iframe>`;
             document.getElementById('playerOverlay').style.display = 'block';
         }
-
-        function filterCat(cat, btn) {
-            currentCat = cat;
-            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            renderAll();
-        }
-        function closeP() { document.getElementById('playerOverlay').style.display = 'none'; document.getElementById('videoContainer').innerHTML = ""; }
-        function deleteM(i) { 
-            if(confirm("Supprimer ce film de votre vue locale ?")) { 
-                storedMovies.splice(i,1); 
-                localStorage.setItem('dodo_lib', JSON.stringify(storedMovies)); 
-                location.reload();
-            } 
-        }
-
-        checkVip();
-        renderAll();
-    </script>
-</body>
-</html>
