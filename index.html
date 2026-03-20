@@ -2,248 +2,131 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dodoflex | Streaming Officiel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dodoflex Pro</title>
     <style>
-        :root { --primary: #e50914; --bg: #141414; --gold: #ffd700; --card-bg: #181818; }
-        body { margin: 0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background: var(--bg); color: white; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
-
-        /* Navbar */
-        .navbar { display: flex; justify-content: space-between; padding: 15px 5%; background: rgba(0,0,0,0.95); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); position: fixed; width: 100%; z-index: 2000; box-sizing: border-box; align-items: center; border-bottom: 1px solid #222; }
-        .logo { color: var(--primary); font-weight: bold; font-size: 1.4rem; letter-spacing: 1px; }
-        #userGrade { font-size: 0.7rem; color: #aaa; text-transform: uppercase; margin-top: 2px; }
-        .vip-active { color: var(--gold) !important; font-weight: bold; }
-
-        .nav-btns { display: flex; gap: 10px; }
-        .btn-vip { background: transparent; color: var(--gold); border: 1px solid var(--gold); padding: 6px 14px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; font-weight: bold; }
-        .btn-admin { background: #333; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 1.1rem; }
-
-        /* Hero Banner */
-        .hero { position: relative; width: 100%; height: 55vh; background-size: cover; background-position: center; display: flex; align-items: flex-end; padding: 0 5% 50px 5%; box-sizing: border-box; background-color: #222; transition: 0.5s; }
-        .hero::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(0deg, var(--bg) 10%, transparent 100%); }
-        .hero-content { position: relative; z-index: 10; width: 100%; }
-        .hero-title { font-size: 2.2rem; font-weight: bold; margin-bottom: 15px; text-shadow: 2px 2px 15px rgba(0,0,0,0.9); }
-        .btn-play-hero { background: white; color: black; border: none; padding: 12px 35px; border-radius: 4px; font-weight: bold; cursor: pointer; }
-
-        /* Admin Panel */
-        #adminPanel { display: none; background: #111; padding: 100px 5% 20px 5%; border-bottom: 2px solid var(--primary); }
-        .admin-box { background: #1a1a1a; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #333; }
-        h3 { margin: 0 0 12px 0; color: var(--primary); font-size: 0.85rem; text-transform: uppercase; }
-        input, select { width: 100%; padding: 12px; margin: 6px 0; background: #222; color: white; border: 1px solid #333; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
-        .btn-save { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
-
-        /* Grid & Filters */
-        .controls { padding: 30px 5% 10px 5%; background: var(--bg); }
-        #searchBar { width: 100%; padding: 15px; border-radius: 8px; border: 1px solid #444; background: #222; color: white; margin-bottom: 20px; box-sizing: border-box; outline: none; }
-        .categories { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 15px; scrollbar-width: none; }
-        .cat-btn { background: #2a2a2a; color: white; border: none; padding: 9px 24px; border-radius: 25px; cursor: pointer; white-space: nowrap; font-size: 0.9rem; }
-        .cat-btn.active { background: var(--primary); font-weight: bold; }
-
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 5% 120px 5%; }
-        .card { background: var(--card-bg); border-radius: 10px; overflow: hidden; position: relative; height: 250px; border: 1px solid #222; cursor: pointer; }
-        .card img { width: 100%; height: 100%; object-fit: cover; }
-        .card-title { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.85); padding: 10px 0; text-align: center; font-size: 0.8rem; }
-        .badge-vip { position: absolute; top: 12px; right: 12px; background: var(--gold); color: black; font-size: 0.65rem; font-weight: bold; padding: 4px 8px; border-radius: 5px; z-index: 5; }
-
-        /* Player */
-        #playerOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 3000; }
-        .close-p { position: absolute; top: 30px; left: 30px; color: white; font-size: 2.5rem; cursor: pointer; z-index: 3100; }
+        body { margin: 0; background: #141414; color: white; font-family: sans-serif; }
+        .nav { display: flex; justify-content: space-between; padding: 15px; background: #000; align-items: center; border-bottom: 1px solid #333; }
+        .logo { color: #e50914; font-weight: bold; font-size: 1.2rem; }
         
-        @media (min-width: 768px) { .grid { grid-template-columns: repeat(4, 1fr); } }
+        /* Panneau Admin */
+        #adminPanel { display: none; padding: 20px; background: #222; border-bottom: 2px solid #e50914; }
+        input { width: 100%; padding: 10px; margin: 5px 0; background: #333; color: white; border: 1px solid #444; border-radius: 5px; box-sizing: border-box; }
+        .btn-add { width: 100%; padding: 10px; background: #e50914; border: none; color: white; font-weight: bold; border-radius: 5px; margin-top: 5px; }
+
+        /* Grille */
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 15px; }
+        .card { background: #181818; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid #333; }
+        .card img { width: 100%; height: 150px; object-fit: cover; display: block; }
+        .card-title { padding: 10px; text-align: center; font-size: 0.8rem; background: rgba(0,0,0,0.8); }
+
+        /* Lecteur */
+        #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; }
+        .close { position: absolute; top: 20px; left: 20px; font-size: 2rem; color: white; cursor: pointer; z-index: 10000; }
     </style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="logo-area">
-            <div class="logo">DODOFLEX</div>
-            <div id="userGrade">Grade: Membre</div>
+    <div class="nav">
+        <div class="logo">DODOFLEX</div>
+        <div>
+            <button onclick="checkVip()" style="background:transparent; border:1px solid gold; color:gold; padding:5px 10px; border-radius:4px;">VIP</button>
+            <button onclick="askAdmin()" style="background:#333; border:none; color:white; padding:5px 10px; border-radius:4px; margin-left:5px;">⚙️</button>
         </div>
-        <div class="nav-btns">
-            <button class="btn-vip" id="vipAction" onclick="askVip()">ACTIVER VIP</button>
-            <button class="btn-admin" onclick="openAdmin()">⚙️</button>
-        </div>
-    </nav>
+    </div>
 
     <div id="adminPanel">
-        <div class="admin-box">
-            <h3>🔑 Codes Locaux (Test uniquement)</h3>
-            <p style="font-size: 0.7rem; color: #777;">Note: Ces codes ne marchent que sur votre navigateur actuel.</p>
-            <input type="text" id="newCode" placeholder="Nom du code">
-            <input type="number" id="newDuration" placeholder="Quantité">
-            <select id="durationUnit">
-                <option value="60000">Minutes</option>
-                <option value="3600000">Heures</option>
-                <option value="86400000">Jours</option>
-            </select>
-            <button class="btn-save" style="background: var(--gold); color: black;" onclick="generateLocalCode()">GÉNÉRER LOCAL</button>
-            <div id="codeStatus" style="font-size: 0.8rem; margin-top: 10px; color: #0f0;"></div>
-        </div>
-
-        <div class="admin-box">
-            <h3>🎬 Ajouter (Localement)</h3>
-            <input type="text" id="mT" placeholder="Titre">
-            <input type="text" id="mI" placeholder="Lien image">
-            <input type="text" id="mV" placeholder="Lien vidéo">
-            <select id="mC">
-                <option value="Action">Action</option>
-                <option value="Animé">Animé</option>
-                <option value="VIP">💎 VIP</option>
-            </select>
-            <button class="btn-save" onclick="addMovieLocal()">PUBLIER LOCALEMENT</button>
-        </div>
+        <h3 style="margin-top:0">Ajouter un film</h3>
+        <input type="text" id="t" placeholder="Titre du film">
+        <input type="text" id="i" placeholder="Lien de l'image (URL)">
+        <input type="text" id="v" placeholder="Lien de la vidéo (URL)">
+        <button class="btn-add" onclick="saveMovie()">PUBLIER SUR LE SITE</button>
     </div>
 
-    <header id="heroSection" class="hero">
-        <div class="hero-content">
-            <h1 class="hero-title" id="heroTitle">Bienvenue</h1>
-            <button class="btn-play-hero" id="heroBtn">▶ Lancer</button>
-        </div>
-    </header>
+    <div class="grid" id="container"></div>
 
-    <div class="controls">
-        <input type="text" id="searchBar" placeholder="Rechercher..." onkeyup="renderAll()">
-        <div class="categories">
-            <button class="cat-btn active" onclick="filterCat('Tous', this)">Tous</button>
-            <button class="cat-btn" onclick="filterCat('Action', this)">Action</button>
-            <button class="cat-btn" onclick="filterCat('Animé', this)">Animé</button>
-            <button class="cat-btn" onclick="filterCat('VIP', this)" style="color:var(--gold)">💎 VIP</button>
-        </div>
-    </div>
-
-    <div class="grid" id="movieGrid"></div>
-
-    <div id="playerOverlay">
-        <div class="close-p" onclick="closeP()">✕</div>
-        <div id="videoContainer" style="width:100%; height:100%; display:flex; align-items:center;"></div>
+    <div id="player">
+        <div class="close" onclick="closeVideo()">✕</div>
+        <div id="videoBox" style="width:100%; height:100%;"></div>
     </div>
 
     <script>
-        /* ==========================================
-           ZONE ADMIN : À MODIFIER SUR GITHUB
-        ========================================== */
-        
-        const ADMIN_PASSWORD = "D121028."; 
+        // --- CONFIGURATION ---
+        const PASS_ADMIN = "D121028.";
+        const PASS_VIP = "12199";
 
-        const GLOBAL_MOVIES = [
-            { t: "Big Buck Bunny", img: "https://upload.wikimedia.org/wikipedia/commons/c/c5/Big_buck_bunny_poster_big.jpg", vid: "https://www.youtube.com/watch?v=aqz-KE-bpKQ", c: "Action" },
-            { t: "Sintel", img: "https://durian.blender.org/wp-content/uploads/2010/10/sintel-poster.jpg", vid: "https://www.youtube.com/watch?v=eRsGyueVLvQ", c: "Animé" },
-            { t: "Tears of Steel (Exclu VIP)", img: "https://mango.blender.org/wp-content/uploads/2012/09/TOS_poster_lowres.jpg", vid: "https://www.youtube.com/watch?v=R6MlUcmOul8", c: "VIP" }
+        // Films par défaut
+        const DEFAUT = [
+            {t: "Big Buck Bunny", i: "https://upload.wikimedia.org/wikipedia/commons/c/c5/Big_buck_bunny_poster_big.jpg", v: "https://www.youtube.com/embed/aqz-KE-bpKQ"},
+            {t: "Sintel", i: "https://durian.blender.org/wp-content/uploads/2010/10/sintel-poster.jpg", v: "https://www.youtube.com/embed/eRsGyueVLvQ"}
         ];
 
-        const GLOBAL_CODES = {
-            "VIP-24H": 86400000,
-            "DODO-2026": 2592000000 
-        };
-
-        /* ==========================================
-           LOGIQUE DU SITE
-        ========================================== */
-
-        let storedMovies = JSON.parse(localStorage.getItem('dodo_lib')) || [];
-        let localCodes = JSON.parse(localStorage.getItem('dodo_codes')) || {}; 
-        let currentCat = "Tous";
-
-        function openAdmin() {
-            const p = prompt("Mot de passe Admin :");
-            if(p === ADMIN_PASSWORD) {
-                const panel = document.getElementById('adminPanel');
-                panel.style.display = (panel.style.display === 'block' ? 'none' : 'block');
-            } else { alert("Accès refusé."); }
+        // Charger les films
+        function load() {
+            const list = JSON.parse(localStorage.getItem('films')) || DEFAUT;
+            const container = document.getElementById('container');
+            container.innerHTML = "";
+            
+            list.forEach((m, index) => {
+                container.innerHTML += `
+                    <div class="card" onclick="openVideo('${m.v}')">
+                        <img src="${m.i}">
+                        <div class="card-title">${m.t}</div>
+                    </div>
+                `;
+            });
         }
 
-        function generateLocalCode() {
-            const code = document.getElementById('newCode').value.trim();
-            const qty = document.getElementById('newDuration').value;
-            const unit = document.getElementById('durationUnit').value;
-            if(code && qty) {
-                localCodes[code] = qty * unit;
-                localStorage.setItem('dodo_codes', JSON.stringify(localCodes));
-                document.getElementById('codeStatus').innerText = `✅ Code "${code}" créé localement.`;
+        // Fonctions Boutons
+        function askAdmin() {
+            let p = prompt("Mot de passe Admin :");
+            if(p === PASS_ADMIN) {
+                let panel = document.getElementById('adminPanel');
+                panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
+            } else {
+                alert("Erreur !");
             }
-        }
-
-        function askVip() {
-            const input = prompt("Entrez votre code VIP :");
-            if(!input) return;
-            let duration = GLOBAL_CODES[input] || localCodes[input];
-            if(duration) {
-                const expiry = new Date().getTime() + duration;
-                if(localCodes[input]) {
-                    delete localCodes[input];
-                    localStorage.setItem('dodo_codes', JSON.stringify(localCodes));
-                }
-                localStorage.setItem('dodo_vip_expiry', expiry);
-                localStorage.setItem('dodo_status', 'VIP');
-                alert("✨ VIP ACTIVÉ !");
-                location.reload();
-            } else if (input === "12199") {
-                localStorage.setItem('dodo_status', 'VIP');
-                location.reload();
-            } else { alert("Code invalide ou déjà utilisé."); }
         }
 
         function checkVip() {
-            const expiry = localStorage.getItem('dodo_vip_expiry');
-            if (localStorage.getItem('dodo_status') === 'VIP' && expiry) {
-                if (new Date().getTime() > parseInt(expiry)) {
-                    localStorage.removeItem('dodo_status');
-                    localStorage.removeItem('dodo_vip_expiry');
-                    alert("Votre accès VIP a expiré."); location.reload();
-                }
-            }
-            if(localStorage.getItem('dodo_status') === 'VIP') {
-                document.getElementById('userGrade').innerText = "Grade: PRO ✨";
-                document.getElementById('userGrade').classList.add('vip-active');
-                document.getElementById('vipAction').style.display = 'none';
+            let p = prompt("Code VIP :");
+            if(p === PASS_VIP) {
+                alert("Accès VIP Activé !");
+            } else {
+                alert("Code invalide.");
             }
         }
 
-        function renderAll() {
-            const grid = document.getElementById('movieGrid');
-            const search = document.getElementById('searchBar').value.toLowerCase();
-            const allMovies = [...storedMovies, ...GLOBAL_MOVIES];
-            
-            if(allMovies.length > 0) {
-                const head = allMovies[0]; // Le dernier ajouté localement ou le 1er global
-                document.getElementById('heroSection').style.backgroundImage = `url('${head.img}')`;
-                document.getElementById('heroTitle').innerText = head.t;
-                document.getElementById('heroBtn').onclick = () => playV(head.vid, head.c);
-            }
+        function saveMovie() {
+            let titre = document.getElementById('t').value;
+            let image = document.getElementById('i').value;
+            let video = document.getElementById('v').value;
 
-            const filtered = allMovies.filter(m => {
-                return (currentCat === "Tous" || m.c === currentCat) && m.t.toLowerCase().includes(search);
-            });
-
-            grid.innerHTML = filtered.map((m, i) => {
-                const realIndex = i; 
-                return `
-                <div class="card" onclick="playV('${m.vid}', '${m.c}')" oncontextmenu="deleteM(${i}); return false;">
-                    ${m.c === 'VIP' ? '<div class="badge-vip">💎 VIP</div>' : ''}
-                    <img src="${m.img}" loading="lazy">
-                    <div class="card-title">${m.t}</div>
-                </div>
-            `}).join('');
-        }
-
-        function addMovieLocal() {
-            const t = document.getElementById('mT').value, i = document.getElementById('mI').value, v = document.getElementById('mV').value, c = document.getElementById('mC').value;
-            if(t && i && v) {
-                storedMovies.unshift({t, img: i, vid: v, c});
-                localStorage.setItem('dodo_lib', JSON.stringify(storedMovies));
+            if(titre && image && video) {
+                let list = JSON.parse(localStorage.getItem('films')) || DEFAUT;
+                list.unshift({t: titre, i: image, v: video});
+                localStorage.setItem('films', JSON.stringify(list));
                 location.reload();
+            } else {
+                alert("Remplis tout !");
             }
         }
 
-        function playV(url, cat) {
-            if(cat === 'VIP' && localStorage.getItem('dodo_status') !== 'VIP') {
-                alert("Accès réservé aux membres PRO !"); return;
-            }
-            const container = document.getElementById('videoContainer');
-            let fUrl = url;
-            if(url.includes("youtube.com/watch?v=")) fUrl = url.replace("watch?v=", "embed/");
-            if(url.includes("youtu.be/")) fUrl = url.replace("youtu.be/", "youtube.com/embed/");
+        function openVideo(url) {
+            let link = url;
+            if(url.includes("watch?v=")) link = url.replace("watch?v=", "embed/");
             
-            container.innerHTML = `<iframe src="${fUrl}?autoplay=1" style="width:100%; height:85%; border:none;" allowfullscreen allow="autoplay"></iframe>`;
-            document.getElementById('playerOverlay').style.display = 'block';
+            document.getElementById('videoBox').innerHTML = `<iframe src="${link}?autoplay=1" style="width:100%; height:100%; border:none;" allowfullscreen allow="autoplay"></iframe>`;
+            document.getElementById('player').style.display = 'block';
         }
+
+        function closeVideo() {
+            document.getElementById('player').style.display = 'none';
+            document.getElementById('videoBox').innerHTML = "";
+        }
+
+        // Lancer au démarrage
+        load();
+    </script>
+</body>
+</html>
