@@ -8,60 +8,67 @@
         :root { --primary: #e50914; --bg: #000; --card-bg: #141414; --gold: #ffd700; }
         body { margin: 0; background: var(--bg); color: white; font-family: 'Helvetica Neue', Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        /* Navbar */
+        /* Navbar (Interface Originale) */
         .nav { display: flex; justify-content: space-between; padding: 20px 5%; align-items: center; position: sticky; top: 0; background: rgba(0,0,0,0.9); z-index: 1000; }
         .logo-box { display: flex; flex-direction: column; }
         .logo { color: var(--primary); font-weight: bold; font-size: 1.5rem; letter-spacing: 1px; text-decoration: none; }
         .grade { color: #aaa; font-size: 0.7rem; font-weight: bold; margin-top: 2px; text-transform: uppercase; }
         .grade.pro { color: var(--gold); }
-        #btnVip { color: var(--gold); font-size: 0.6rem; border: 1px solid var(--gold); padding: 2px 5px; border-radius: 3px; margin-top: 5px; background: none; cursor: pointer; width: fit-content; }
+        #btnVip { color: var(--gold); font-size: 0.6rem; border: 1px solid var(--gold); padding: 2px 5px; border-radius: 3px; margin-top: 5px; background: none; cursor: pointer; width: fit-content; font-weight: bold; }
 
         .btn-plus { background: var(--primary); color: white; border: none; width: 35px; height: 35px; border-radius: 5px; font-weight: bold; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
-        /* Hero */
+        /* Panel Admin (Interface Originale) */
+        #admin { display: none; background: #1a1a1a; padding: 20px 5%; border-bottom: 2px solid var(--primary); }
+        .admin-box { border: 1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: #222; }
+        h3 { margin: 0 0 10px 0; font-size: 0.8rem; color: var(--primary); text-transform: uppercase; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; background: #333; color: white; border: 1px solid #444; border-radius: 5px; box-sizing: border-box; font-size: 16px; outline: none; }
+
+        /* Hero (Interface Originale) */
         .hero { padding: 80px 5% 40px 5%; background-size: cover; background-position: center; min-height: 350px; display: flex; flex-direction: column; justify-content: flex-end; position: relative; }
         .hero::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent, var(--bg)); }
         .hero-content { position: relative; z-index: 2; }
-        .hero h1 { font-size: 2.5rem; margin: 0; text-shadow: 2px 2px 10px rgba(0,0,0,0.8); }
+        .hero h1 { font-size: 2.5rem; margin: 0; text-shadow: 2px 2px 15px rgba(0,0,0,1); }
         .btn-play { background: white; color: black; border: none; padding: 12px 30px; border-radius: 4px; font-weight: bold; margin-top: 20px; width: fit-content; font-size: 1.1rem; cursor: pointer; }
 
-        /* Admin */
-        #admin { display: none; background: #1a1a1a; padding: 20px 5%; border-bottom: 2px solid var(--primary); }
-        input, select { width: 100%; padding: 12px; margin: 8px 0; background: #333; color: white; border: 1px solid #444; border-radius: 5px; box-sizing: border-box; font-size: 16px; }
-
-        /* Recherche */
+        /* Grille & Filtres (Interface Originale) */
         .search-area { padding: 20px 5% 0 5%; }
-        #search { width: 100%; padding: 15px; border-radius: 8px; border: 1px solid #333; background: #141414; color: white; box-sizing: border-box; outline: none; }
-        
-        /* Filtres */
+        #search { width: 100%; padding: 15px; border-radius: 8px; border: 1px solid #333; background: #141414; color: white; box-sizing: border-box; }
         .cats { display: flex; gap: 10px; padding: 15px 5%; overflow-x: auto; scrollbar-width: none; }
         .cat-btn { background: #333; color: white; border: none; padding: 10px 25px; border-radius: 20px; white-space: nowrap; font-weight: bold; cursor: pointer; }
         .cat-btn.active { background: var(--primary); }
 
-        /* Grille */
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 5% 100px 5%; }
-        .card { background: var(--card-bg); border-radius: 4px; overflow: hidden; cursor: pointer; }
+        .card { background: var(--card-bg); border-radius: 4px; overflow: hidden; cursor: pointer; border: 1px solid #222; }
         .card img { width: 100%; height: 240px; object-fit: cover; display: block; }
-        .card-t { padding: 10px; text-align: center; font-size: 0.8rem; }
+        .card-t { padding: 10px; text-align: center; font-size: 0.8rem; font-weight: bold; }
 
         /* Player */
         #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; }
-        .close { position: absolute; top: 20px; left: 20px; font-size: 2rem; color: white; z-index: 10001; background: rgba(0,0,0,0.5); width: 45px; height: 45px; text-align: center; line-height: 45px; border-radius: 50%; }
+        .close { position: absolute; top: 25px; left: 25px; font-size: 2rem; color: white; z-index: 10001; background: rgba(0,0,0,0.6); width: 45px; height: 45px; text-align: center; line-height: 45px; border-radius: 50%; }
     </style>
 </head>
 <body>
 
     <div id="admin">
-        <h3 style="margin:0 0 10px 0">Ajouter un contenu</h3>
-        <input type="text" id="t" placeholder="Titre">
-        <input type="text" id="i" placeholder="URL Image">
-        <input type="text" id="v" placeholder="URL Vidéo (Embed)">
-        <select id="c">
-            <option value="Action">Action</option>
-            <option value="Animé">Animé</option>
-            <option value="Horreur">Horreur</option>
-        </select>
-        <button onclick="save()" style="width:100%; padding:15px; background:var(--primary); color:white; border:none; border-radius:5px; font-weight:bold; margin-top:10px;">PUBLIER</button>
+        <div class="admin-box">
+            <h3>🔑 Codes VIP</h3>
+            <input type="text" id="newVipCode" placeholder="Créer un code VIP">
+            <button onclick="generateCode()" style="width:100%; padding:10px; background:var(--gold); color:black; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">ENREGISTRER LE CODE</button>
+            <p id="adminStatus" style="font-size:0.7rem; color:lime; margin-top:5px; display:none;">✅ Code prêt à l'emploi !</p>
+        </div>
+        <div class="admin-box">
+            <h3>🎬 Ajouter un Film</h3>
+            <input type="text" id="t" placeholder="Titre">
+            <input type="text" id="i" placeholder="URL Image">
+            <input type="text" id="v" placeholder="Lien Vidéo">
+            <select id="c">
+                <option value="Action">Action</option>
+                <option value="Animé">Animé</option>
+                <option value="Horreur">Horreur</option>
+            </select>
+            <button onclick="save()" style="width:100%; padding:15px; background:var(--primary); color:white; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">AJOUTER</button>
+        </div>
     </div>
 
     <nav class="nav">
@@ -80,9 +87,7 @@
         </div>
     </header>
 
-    <div class="search-area">
-        <input type="text" id="search" placeholder="Rechercher un film..." onkeyup="render()">
-    </div>
+    <div class="search-area"><input type="text" id="search" placeholder="Rechercher..." onkeyup="render()"></div>
 
     <div class="cats">
         <button class="cat-btn active" onclick="filter('Tous', this)">Tous</button>
@@ -100,7 +105,7 @@
 
     <script>
         const PASS_ADMIN = "D121028.";
-        const CODE_VIP = "12199";
+        const MASTER_VIP = "12199";
 
         const DEFAUT = [
             {t: "Big Buck Bunny", i: "https://upload.wikimedia.org/wikipedia/commons/c/c5/Big_buck_bunny_poster_big.jpg", v: "https://www.youtube.com/embed/aqz-KE-bpKQ", c: "Action"},
@@ -111,33 +116,48 @@
 
         function checkStatus() {
             if(localStorage.getItem('isVip') === 'true') {
-                document.getElementById('gradeTxt').innerText = "GRADE: PRO ✨";
-                document.getElementById('gradeTxt').classList.add('pro');
+                const g = document.getElementById('gradeTxt');
+                g.innerText = "GRADE: PRO ✨";
+                g.classList.add('pro');
                 document.getElementById('btnVip').style.display = 'none';
             }
         }
 
+        // --- CORRECTION SYSTEME VIP ---
+        function generateCode() {
+            const val = document.getElementById('newVipCode').value.trim();
+            if(val) {
+                let codes = JSON.parse(localStorage.getItem('vip_codes_database')) || [];
+                codes.push(val);
+                localStorage.setItem('vip_codes_database', JSON.stringify(codes));
+                document.getElementById('newVipCode').value = "";
+                document.getElementById('adminStatus').style.display = "block";
+                setTimeout(() => { document.getElementById('adminStatus').style.display = "none"; }, 2000);
+            }
+        }
+
         function activateVip() {
-            if(prompt("Entrez votre code VIP :") === CODE_VIP) {
+            const input = prompt("Code VIP :");
+            if(!input) return;
+            let dbCodes = JSON.parse(localStorage.getItem('vip_codes_database')) || [];
+            
+            if(input === MASTER_VIP || dbCodes.includes(input)) {
                 localStorage.setItem('isVip', 'true');
-                alert("Félicitations ! Vous êtes maintenant PRO ✨");
+                alert("Compte passé en PRO ✨");
                 checkStatus();
-            } else { alert("Code incorrect."); }
+            } else { alert("Code invalide."); }
         }
 
         function render() {
-            const list = JSON.parse(localStorage.getItem('dodo_flix_final')) || DEFAUT;
+            const list = JSON.parse(localStorage.getItem('dodo_main_db')) || DEFAUT;
             const s = document.getElementById('search').value.toLowerCase();
             const container = document.getElementById('main');
             container.innerHTML = "";
-
             if(list.length > 0) {
                 document.getElementById('heroT').innerText = list[0].t;
                 document.getElementById('hero').style.backgroundImage = `url('${list[0].i}')`;
             }
-
             const filtered = list.filter(m => (currentCat === "Tous" || m.c === currentCat) && m.t.toLowerCase().includes(s));
-
             filtered.forEach(m => {
                 const div = document.createElement('div');
                 div.className = 'card';
@@ -148,34 +168,32 @@
         }
 
         function askAdmin() {
-            if(prompt("Admin Password :") === PASS_ADMIN) {
+            if(prompt("Pass Admin :") === PASS_ADMIN) {
                 const a = document.getElementById('admin');
                 a.style.display = (a.style.display === 'block') ? 'none' : 'block';
-                window.scrollTo(0,0);
             }
         }
 
         function save() {
-            const t = document.getElementById('t').value, i = document.getElementById('i').value, 
-                  v = document.getElementById('v').value, c = document.getElementById('c').value;
+            const t = document.getElementById('t').value, i = document.getElementById('i').value, v = document.getElementById('v').value, c = document.getElementById('c').value;
             if(t && i && v) {
-                let list = JSON.parse(localStorage.getItem('dodo_flix_final')) || DEFAUT;
+                let list = JSON.parse(localStorage.getItem('dodo_main_db')) || DEFAUT;
                 list.unshift({t, i, v, c});
-                localStorage.setItem('dodo_flix_final', JSON.stringify(list));
+                localStorage.setItem('dodo_main_db', JSON.stringify(list));
                 location.reload();
             }
         }
 
         function openV(url) {
-            let link = url;
-            if(url.includes("watch?v=")) link = url.replace("watch?v=", "embed/");
-            document.getElementById('vBox').innerHTML = `<iframe src="${link}?autoplay=1" style="width:100%; height:100%; border:none;" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
+            let final = url.includes("watch?v=") ? url.replace("watch?v=", "embed/") : url;
+            if(url.includes("youtu.be/")) final = url.replace("youtu.be/", "youtube.com/embed/");
+            document.getElementById('vBox').innerHTML = `<iframe src="${final}?autoplay=1" style="width:100%; height:100%; border:none;" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
             document.getElementById('player').style.display = 'block';
         }
 
         function closeV() { document.getElementById('player').style.display = 'none'; document.getElementById('vBox').innerHTML = ""; }
         function playHero() { 
-            const list = JSON.parse(localStorage.getItem('dodo_flix_final')) || DEFAUT;
+            const list = JSON.parse(localStorage.getItem('dodo_main_db')) || DEFAUT;
             if(list.length > 0) openV(list[0].v); 
         }
 
@@ -186,8 +204,7 @@
             render();
         }
 
-        checkStatus();
-        render();
+        window.onload = () => { checkStatus(); render(); };
     </script>
 </body>
 </html>
