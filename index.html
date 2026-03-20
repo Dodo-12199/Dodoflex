@@ -6,10 +6,11 @@
     <title>Dodoflex Pro</title>
     <style>
         :root { --primary: #e50914; --bg: #000; --card-bg: #141414; --gold: #ffd700; }
+        * { box-sizing: border-box; } /* Évite que les menus dépassent de l'écran */
         body { margin: 0; background: var(--bg); color: white; font-family: 'Helvetica Neue', Arial, sans-serif; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
         
         /* Navbar */
-        .nav { display: flex; justify-content: space-between; padding: 20px 5%; align-items: center; position: sticky; top: 0; background: rgba(0,0,0,0.9); z-index: 1000; }
+        .nav { display: flex; justify-content: space-between; padding: 20px 5%; align-items: center; position: sticky; top: 0; background: rgba(0,0,0,0.95); z-index: 1000; }
         .logo-box { display: flex; flex-direction: column; }
         .logo { color: var(--primary); font-weight: bold; font-size: 1.5rem; letter-spacing: 1px; text-decoration: none; }
         .grade { color: #aaa; font-size: 0.7rem; font-weight: bold; margin-top: 2px; text-transform: uppercase; }
@@ -22,10 +23,10 @@
         #admin { display: none; background: #1a1a1a; padding: 20px 5%; border-bottom: 2px solid var(--primary); }
         .admin-box { border: 1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: #222; }
         h3 { margin: 0 0 10px 0; font-size: 0.8rem; color: var(--primary); text-transform: uppercase; }
-        input, select { width: 100%; padding: 12px; margin: 8px 0; background: #333; color: white; border: 1px solid #444; border-radius: 5px; box-sizing: border-box; font-size: 16px; outline: none; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; background: #333; color: white; border: 1px solid #444; border-radius: 5px; font-size: 16px; outline: none; }
 
         /* Hero */
-        .hero { padding: 80px 5% 40px 5%; background-size: cover; background-position: center; min-height: 350px; display: flex; flex-direction: column; justify-content: flex-end; position: relative; transition: 0.5s; }
+        .hero { padding: 80px 5% 40px 5%; background-size: cover; background-position: center; min-height: 380px; display: flex; flex-direction: column; justify-content: flex-end; position: relative; transition: 0.5s; }
         .hero::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent, var(--bg)); }
         .hero-content { position: relative; z-index: 2; }
         .hero h1 { font-size: 2.3rem; margin: 0; text-shadow: 2px 2px 15px rgba(0,0,0,1); line-height: 1.1; }
@@ -33,7 +34,7 @@
 
         /* Recherche & Filtres */
         .search-area { padding: 20px 5% 0 5%; }
-        #search { width: 100%; padding: 15px; border-radius: 8px; border: 1px solid #333; background: #141414; color: white; box-sizing: border-box; font-size: 16px; }
+        #search { width: 100%; padding: 15px; border-radius: 8px; border: 1px solid #333; background: #141414; color: white; font-size: 16px; }
         .cats { display: flex; gap: 10px; padding: 15px 5%; overflow-x: auto; scrollbar-width: none; }
         .cat-btn { background: #333; color: white; border: none; padding: 10px 25px; border-radius: 20px; white-space: nowrap; font-weight: bold; cursor: pointer; }
         .cat-btn.active { background: var(--primary); }
@@ -45,13 +46,13 @@
         .card img { width: 100%; height: 240px; object-fit: cover; display: block; }
         .card-t { padding: 10px; text-align: center; font-size: 0.8rem; font-weight: bold; }
         .badge-vip { position: absolute; top: 5px; right: 5px; background: var(--gold); color: black; font-size: 0.6rem; padding: 2px 5px; border-radius: 3px; font-weight: bold; z-index: 5; }
+        .del-btn { display: none; position: absolute; top: 5px; left: 5px; background: #e50914; color: white; border: none; border-radius: 3px; padding: 6px 10px; font-size: 0.7rem; font-weight: bold; z-index: 10; cursor: pointer; }
 
-        /* Bouton Supprimer (Admin) */
-        .del-btn { display: none; position: absolute; top: 5px; left: 5px; background: #e50914; color: white; border: none; border-radius: 3px; padding: 6px 10px; font-size: 0.7rem; font-weight: bold; z-index: 10; cursor: pointer; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
-
-        /* Player */
+        /* Lecteur Cinéma Hybride */
         #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; }
         .close { position: absolute; top: 25px; left: 25px; font-size: 2rem; color: white; z-index: 10001; background: rgba(0,0,0,0.6); width: 45px; height: 45px; text-align: center; line-height: 45px; border-radius: 50%; cursor: pointer; }
+        #vBox { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+        video, iframe { width: 100%; height: 100%; border: none; background: black; }
     </style>
 </head>
 <body>
@@ -60,17 +61,16 @@
         <div class="admin-box">
             <h3>🎬 Ajouter un Film</h3>
             <input type="text" id="t" placeholder="Titre du film">
-            <input type="text" id="i" placeholder="Lien de l'image (Affiche)">
-            <input type="text" id="v" placeholder="Lien Vidéo (YouTube ou Direct)">
+            <input type="text" id="i" placeholder="URL de l'image (Affiche)">
+            <input type="text" id="v" placeholder="Lien Vidéo (YouTube ou .mp4)">
             <select id="c">
                 <option value="Action">Action</option>
                 <option value="Animé">Animé</option>
                 <option value="Horreur">Horreur</option>
                 <option value="VIP">💎 EXCLUSIF VIP</option>
             </select>
-            <button onclick="save()" style="width:100%; padding:15px; background:var(--primary); color:white; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">PUBLIER MAINTENANT</button>
+            <button onclick="save()" style="width:100%; padding:15px; background:var(--primary); color:white; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">PUBLIER</button>
         </div>
-        <p style="text-align:center; font-size:0.75rem; color:#aaa;">Mode Edition : Cliquez sur <b>SUPPR.</b> sur un film pour le retirer.</p>
     </div>
 
     <nav class="nav">
@@ -89,9 +89,7 @@
         </div>
     </header>
 
-    <div class="search-area">
-        <input type="text" id="search" placeholder="Rechercher un film..." onkeyup="render()">
-    </div>
+    <div class="search-area"><input type="text" id="search" placeholder="Rechercher..." onkeyup="render()"></div>
 
     <div class="cats">
         <button class="cat-btn active" onclick="filter('Tous', this)">Tous</button>
@@ -105,51 +103,39 @@
 
     <div id="player">
         <div class="close" onclick="closeV()">✕</div>
-        <div id="vBox" style="width:100%; height:100%;"></div>
+        <div id="vBox"></div>
     </div>
 
     <script>
         const PASS_ADMIN = "D121028.";
         const MASTER_VIP = "12199"; 
-        const CODES_VIP = [
-            { code: "Dodo1234", expire: "2026-12-31 23:59" } 
-        ];
+        const CODES_VIP = [{ code: "Dodo1234", expire: "2026-12-31 23:59" }];
+        const DB_KEY = "dodo_final_db";
 
         let isAdminOpen = false;
         let currentCat = "Tous";
-        const DEFAUT = [{t: "Big Buck Bunny", i: "https://upload.wikimedia.org/wikipedia/commons/c/c5/Big_buck_bunny_poster_big.jpg", v: "https://www.youtube.com/embed/aqz-KE-bpKQ", c: "Action"}];
+        const DEFAUT = [{t: "Dodoflex Pro", i: "https://images.unsplash.com/photo-1574267431840-373966b95a3c?w=800", v: "https://www.youtube.com/embed/aqz-KE-bpKQ", c: "Action"}];
 
         function checkStatus() {
             if(localStorage.getItem('isVip') === 'true') {
-                const g = document.getElementById('gradeTxt');
-                g.innerText = "GRADE: PRO ✨";
-                g.classList.add('pro');
+                document.getElementById('gradeTxt').innerText = "GRADE: PRO ✨";
+                document.getElementById('gradeTxt').classList.add('pro');
                 document.getElementById('btnVip').style.display = 'none';
                 document.getElementById('catVip').style.display = 'block';
             }
         }
 
         function activateVip() {
-            const input = prompt("Code VIP :");
+            const input = prompt("Entrez votre code :");
             if(!input) return;
-            if(input === MASTER_VIP) {
-                localStorage.setItem('isVip', 'true');
-                alert("Accès PRO Illimité !");
-                location.reload();
-                return;
-            }
+            if(input === MASTER_VIP) { localStorage.setItem('isVip', 'true'); location.reload(); return; }
             const found = CODES_VIP.find(c => c.code === input);
-            if(found) {
-                if(new Date() < new Date(found.expire)) {
-                    localStorage.setItem('isVip', 'true');
-                    alert("VIP Activé jusqu'au " + found.expire);
-                    location.reload();
-                } else { alert("Code expiré."); }
-            } else { alert("Code invalide."); }
+            if(found && (new Date() < new Date(found.expire))) { localStorage.setItem('isVip', 'true'); location.reload(); }
+            else { alert("Code invalide ou expiré."); }
         }
 
         function render() {
-            const list = JSON.parse(localStorage.getItem('dodo_db_v5')) || DEFAUT;
+            const list = JSON.parse(localStorage.getItem(DB_KEY)) || DEFAUT;
             const s = document.getElementById('search').value.toLowerCase();
             const container = document.getElementById('main');
             const isVip = localStorage.getItem('isVip') === 'true';
@@ -164,13 +150,12 @@
             
             filtered.forEach((m) => {
                 if(m.c === "VIP" && !isVip) return; 
-
                 const div = document.createElement('div');
                 div.className = 'card';
                 div.innerHTML = `
                     <button class="del-btn" style="display: ${isAdminOpen ? 'block' : 'none'}" onclick="removeFilm('${m.t}', event)">SUPPR.</button>
                     ${m.c === 'VIP' ? '<div class="badge-vip">PRO ✨</div>' : ''}
-                    <img src="${m.i}">
+                    <img src="${m.i}" onerror="this.src='https://via.placeholder.com/400x600?text=Image+Erreur'">
                     <div class="card-t">${m.t}</div>
                 `;
                 div.onclick = () => openV(m.v);
@@ -179,21 +164,18 @@
         }
 
         function askAdmin() {
-            if(prompt("Pass Admin :") === PASS_ADMIN) {
-                const a = document.getElementById('admin');
+            if(prompt("Pass :") === PASS_ADMIN) {
                 isAdminOpen = !isAdminOpen;
-                a.style.display = isAdminOpen ? 'block' : 'none';
+                document.getElementById('admin').style.display = isAdminOpen ? 'block' : 'none';
                 render();
-                window.scrollTo(0,0);
             }
         }
 
         function removeFilm(titre, event) {
             event.stopPropagation();
-            if(confirm("Supprimer '" + titre + "' ?")) {
-                let list = JSON.parse(localStorage.getItem('dodo_db_v5')) || DEFAUT;
-                const newList = list.filter(f => f.t !== titre);
-                localStorage.setItem('dodo_db_v5', JSON.stringify(newList));
+            if(confirm("Supprimer " + titre + " ?")) {
+                let list = JSON.parse(localStorage.getItem(DB_KEY)) || DEFAUT;
+                localStorage.setItem(DB_KEY, JSON.stringify(list.filter(f => f.t !== titre)));
                 render();
             }
         }
@@ -201,35 +183,29 @@
         function save() {
             const t = document.getElementById('t').value, i = document.getElementById('i').value, v = document.getElementById('v').value, c = document.getElementById('c').value;
             if(t && i && v) {
-                let list = JSON.parse(localStorage.getItem('dodo_db_v5')) || DEFAUT;
+                let list = JSON.parse(localStorage.getItem(DB_KEY)) || DEFAUT;
                 list.unshift({t, i, v, c});
-                localStorage.setItem('dodo_db_v5', JSON.stringify(list));
+                localStorage.setItem(DB_KEY, JSON.stringify(list));
                 location.reload();
             }
         }
 
         function openV(url) {
-            let final = url;
-            if(url.includes("watch?v=")) final = url.replace("watch?v=", "embed/");
-            if(url.includes("youtu.be/")) final = url.replace("youtu.be/", "youtube.com/embed/");
-            
-            document.getElementById('vBox').innerHTML = `<iframe src="${final}?autoplay=1" style="width:100%; height:100%; border:none;" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
+            const vBox = document.getElementById('vBox');
+            vBox.innerHTML = "";
+            if (url.includes(".mp4") || url.includes(".mov")) {
+                vBox.innerHTML = `<video controls autoplay playsinline><source src="${url}" type="video/mp4"></video>`;
+            } else {
+                let final = url.replace("watch?v=", "embed/").replace("youtu.be/", "youtube.com/embed/").replace("youtube.com", "youtube-nocookie.com");
+                vBox.innerHTML = `<iframe src="${final}?autoplay=1&rel=0&modestbranding=1" allowfullscreen allow="autoplay"></iframe>`;
+            }
             document.getElementById('player').style.display = 'block';
+            document.body.style.overflow = "hidden";
         }
 
-        function closeV() { document.getElementById('player').style.display = 'none'; document.getElementById('vBox').innerHTML = ""; }
-        
-        function playHero() { 
-            const list = JSON.parse(localStorage.getItem('dodo_db_v5')) || DEFAUT;
-            if(list.length > 0) openV(list[0].v); 
-        }
-
-        function filter(c, btn) {
-            currentCat = c;
-            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            render();
-        }
+        function closeV() { document.getElementById('player').style.display = 'none'; document.getElementById('vBox').innerHTML = ""; document.body.style.overflow = "auto"; }
+        function playHero() { const list = JSON.parse(localStorage.getItem(DB_KEY)) || DEFAUT; if(list.length > 0) openV(list[0].v); }
+        function filter(c, btn) { currentCat = c; document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); render(); }
 
         window.onload = () => { checkStatus(); render(); };
     </script>
