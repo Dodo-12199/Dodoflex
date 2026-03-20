@@ -2,52 +2,56 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dodoflex | Version Ultimate</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dodoflex | Officiel</title>
     <style>
-        :root { --primary: #e50914; --bg: #141414; --gold: #ffd700; }
-        body { margin: 0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background: var(--bg); color: white; overflow-x: hidden; }
+        :root { --primary: #e50914; --bg: #141414; --gold: #ffd700; --card-bg: #181818; }
+        body { margin: 0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background: var(--bg); color: white; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
 
         /* Navbar */
-        .navbar { display: flex; justify-content: space-between; padding: 15px 5%; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); position: fixed; width: 100%; z-index: 2000; box-sizing: border-box; align-items: center; border-bottom: 1px solid #333; }
-        .logo { color: var(--primary); font-weight: bold; font-size: 1.3rem; }
+        .navbar { display: flex; justify-content: space-between; padding: 15px 5%; background: rgba(0,0,0,0.95); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); position: fixed; width: 100%; z-index: 2000; box-sizing: border-box; align-items: center; border-bottom: 1px solid #222; }
+        .logo { color: var(--primary); font-weight: bold; font-size: 1.4rem; letter-spacing: 1px; }
         #userGrade { font-size: 0.7rem; color: #aaa; text-transform: uppercase; margin-top: 2px; }
         .vip-active { color: var(--gold) !important; font-weight: bold; }
 
         .nav-btns { display: flex; gap: 10px; }
-        .btn-vip { background: transparent; color: var(--gold); border: 1px solid var(--gold); padding: 5px 12px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; font-weight: bold; }
-        .btn-admin { background: #333; color: white; border: none; padding: 8px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        .btn-vip { background: transparent; color: var(--gold); border: 1px solid var(--gold); padding: 6px 14px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; font-weight: bold; }
+        .btn-admin { background: #333; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; }
 
         /* Hero Banner */
-        .hero { position: relative; width: 100%; height: 55vh; background-size: cover; background-position: center; display: flex; align-items: flex-end; padding: 0 5% 40px 5%; box-sizing: border-box; background-color: #222; }
-        .hero::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(0deg, var(--bg) 15%, transparent 100%); }
+        .hero { position: relative; width: 100%; height: 55vh; background-size: cover; background-position: center; display: flex; align-items: flex-end; padding: 0 5% 50px 5%; box-sizing: border-box; background-color: #222; }
+        .hero::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(0deg, var(--bg) 10%, transparent 100%); }
         .hero-content { position: relative; z-index: 10; width: 100%; }
-        .hero-title { font-size: 2.2rem; font-weight: bold; margin-bottom: 15px; text-shadow: 2px 2px 10px rgba(0,0,0,0.8); }
-        .btn-play-hero { background: white; color: black; border: none; padding: 12px 30px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 1rem; }
+        .hero-title { font-size: 2.2rem; font-weight: bold; margin-bottom: 15px; text-shadow: 2px 2px 15px rgba(0,0,0,0.9); }
+        .btn-play-hero { background: white; color: black; border: none; padding: 12px 35px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 1rem; }
 
         /* Admin Panel */
         #adminPanel { display: none; background: #111; padding: 100px 5% 20px 5%; border-bottom: 2px solid var(--primary); }
         .admin-box { background: #1a1a1a; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #333; }
-        h3 { margin: 0 0 10px 0; color: var(--primary); font-size: 0.9rem; text-transform: uppercase; }
-        input, select { width: 100%; padding: 12px; margin: 5px 0; background: #222; color: white; border: 1px solid #333; border-radius: 4px; box-sizing: border-box; }
-        .btn-save { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 5px; font-weight: bold; margin-top: 5px; cursor: pointer; }
+        h3 { margin: 0 0 12px 0; color: var(--primary); font-size: 0.85rem; text-transform: uppercase; }
+        input, select { width: 100%; padding: 12px; margin: 6px 0; background: #222; color: white; border: 1px solid #333; border-radius: 4px; box-sizing: border-box; font-size: 16px; } /* 16px évite le zoom auto sur iPhone */
+        .btn-save { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 5px; font-weight: bold; margin-top: 8px; cursor: pointer; }
 
-        /* Grid & Controls */
-        .controls { padding: 25px 5% 10px 5%; background: var(--bg); }
-        #searchBar { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid #444; background: #222; color: white; margin-bottom: 20px; box-sizing: border-box; outline: none; }
-        .categories { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 15px; scrollbar-width: none; }
-        .cat-btn { background: #2a2a2a; color: white; border: none; padding: 8px 22px; border-radius: 20px; cursor: pointer; white-space: nowrap; font-size: 0.9rem; }
+        /* Controls */
+        .controls { padding: 30px 5% 10px 5%; background: var(--bg); }
+        #searchBar { width: 100%; padding: 15px; border-radius: 8px; border: 1px solid #444; background: #222; color: white; margin-bottom: 20px; box-sizing: border-box; outline: none; }
+        .categories { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 15px; scrollbar-width: none; }
+        .categories::-webkit-scrollbar { display: none; }
+        .cat-btn { background: #2a2a2a; color: white; border: none; padding: 9px 24px; border-radius: 25px; cursor: pointer; white-space: nowrap; font-size: 0.9rem; }
         .cat-btn.active { background: var(--primary); font-weight: bold; }
 
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 5% 100px 5%; }
-        .card { background: #181818; border-radius: 8px; overflow: hidden; position: relative; height: 240px; border: 1px solid #222; cursor: pointer; }
+        /* Movie Grid */
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 5% 120px 5%; }
+        .card { background: var(--card-bg); border-radius: 10px; overflow: hidden; position: relative; height: 250px; border: 1px solid #222; cursor: pointer; }
         .card img { width: 100%; height: 100%; object-fit: cover; }
-        .card-title { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.85); padding: 8px 0; text-align: center; font-size: 0.8rem; font-weight: 500; }
-        .badge-vip { position: absolute; top: 10px; right: 10px; background: var(--gold); color: black; font-size: 0.65rem; font-weight: bold; padding: 3px 7px; border-radius: 4px; z-index: 5; }
+        .card-title { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.85); padding: 10px 0; text-align: center; font-size: 0.8rem; }
+        .badge-vip { position: absolute; top: 12px; right: 12px; background: var(--gold); color: black; font-size: 0.65rem; font-weight: bold; padding: 4px 8px; border-radius: 5px; z-index: 5; }
 
         /* Player */
         #playerOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 3000; }
-        .close-p { position: absolute; top: 25px; left: 25px; color: white; font-size: 2.5rem; cursor: pointer; z-index: 3100; text-shadow: 0 0 10px black; }
+        .close-p { position: absolute; top: 30px; left: 30px; color: white; font-size: 2.5rem; cursor: pointer; z-index: 3100; }
+        
+        @media (min-width: 768px) { .grid { grid-template-columns: repeat(4, 1fr); } }
     </style>
 </head>
 <body>
@@ -65,29 +69,28 @@
 
     <div id="adminPanel">
         <div class="admin-box">
-            <h3>🔑 Générateur de Codes</h3>
-            <input type="text" id="newCode" placeholder="Nom du code (ex: TEST-10)">
-            <div style="display: flex; gap: 5px;">
-                <input type="number" id="newDuration" placeholder="Quantité" style="flex: 2;">
+            <h3>🔑 Générateur (Usage Unique)</h3>
+            <input type="text" id="newCode" placeholder="Nom du code">
+            <div style="display: flex; gap: 8px;">
+                <input type="number" id="newDuration" placeholder="Durer" style="flex: 2;">
                 <select id="durationUnit" style="flex: 1.5;">
                     <option value="60000">Minutes</option>
                     <option value="3600000">Heures</option>
                     <option value="86400000">Jours</option>
                 </select>
             </div>
-            <button class="btn-save" style="background: var(--gold); color: black;" onclick="generateCode()">CRÉER LE CODE</button>
-            <div id="codeStatus" style="font-size: 0.8rem; margin-top: 10px; color: #0f0; font-weight: bold;"></div>
+            <button class="btn-save" style="background: var(--gold); color: black;" onclick="generateCode()">GÉNÉRER</button>
+            <div id="codeStatus" style="font-size: 0.8rem; margin-top: 10px; color: #0f0;"></div>
         </div>
 
         <div class="admin-box">
             <h3>🎬 Ajouter un Film</h3>
             <input type="text" id="mT" placeholder="Titre">
-            <input type="text" id="mI" placeholder="Lien de l'image">
-            <input type="text" id="mV" placeholder="Lien de la vidéo">
+            <input type="text" id="mI" placeholder="Lien image">
+            <input type="text" id="mV" placeholder="Lien vidéo">
             <select id="mC">
                 <option value="Action">Action</option>
                 <option value="Animé">Animé</option>
-                <option value="Horreur">Horreur</option>
                 <option value="VIP">💎 VIP</option>
             </select>
             <button class="btn-save" onclick="addMovie()">PUBLIER</button>
@@ -96,7 +99,7 @@
 
     <header id="heroSection" class="hero">
         <div class="hero-content">
-            <h1 class="hero-title" id="heroTitle">Bienvenue sur Dodoflex</h1>
+            <h1 class="hero-title" id="heroTitle">Dodoflex</h1>
             <button class="btn-play-hero" id="heroBtn">▶ Lancer</button>
         </div>
     </header>
@@ -119,54 +122,50 @@
     </div>
 
     <script>
-        let userMovies = JSON.parse(localStorage.getItem('dodo_lib')) || [];
+        const DEFAULT_MOVIES = [
+            { t: "Big Buck Bunny", img: "https://upload.wikimedia.org/wikipedia/commons/c/c5/Big_buck_bunny_poster_big.jpg", vid: "https://www.youtube.com/watch?v=aqz-KE-bpKQ", c: "Action" },
+            { t: "Sintel", img: "https://durian.blender.org/wp-content/uploads/2010/10/sintel-poster.jpg", vid: "https://www.youtube.com/watch?v=eRsGyueVLvQ", c: "Animé" }
+        ];
+
+        let storedMovies = JSON.parse(localStorage.getItem('dodo_lib')) || [];
         let customCodes = JSON.parse(localStorage.getItem('dodo_codes')) || {}; 
         let currentCat = "Tous";
 
         function generateCode() {
             const code = document.getElementById('newCode').value.trim();
-            const quantity = document.getElementById('newDuration').value;
-            const unitMs = document.getElementById('durationUnit').value;
-            
-            if(code && quantity) {
-                // On stocke la durée totale en millisecondes
-                customCodes[code] = quantity * unitMs;
+            const qty = document.getElementById('newDuration').value;
+            const unit = document.getElementById('durationUnit').value;
+            if(code && qty) {
+                customCodes[code] = qty * unit;
                 localStorage.setItem('dodo_codes', JSON.stringify(customCodes));
-                
-                const unitText = document.getElementById('durationUnit').options[document.getElementById('durationUnit').selectedIndex].text;
-                document.getElementById('codeStatus').innerText = `✅ Code "${code}" (${quantity} ${unitText}) créé !`;
-                document.getElementById('newCode').value = "";
-                document.getElementById('newDuration').value = "";
+                document.getElementById('codeStatus').innerText = `✅ Code "${code}" prêt !`;
+                document.getElementById('newCode').value = ""; document.getElementById('newDuration').value = "";
             }
         }
 
         function askVip() {
-            const input = prompt("Code d'activation :");
+            const input = prompt("Code VIP :");
             if(!input) return;
-            
             if(customCodes[input]) {
-                const durationMs = customCodes[input];
-                const expiry = new Date().getTime() + durationMs;
+                const expiry = new Date().getTime() + customCodes[input];
+                delete customCodes[input];
+                localStorage.setItem('dodo_codes', JSON.stringify(customCodes));
                 localStorage.setItem('dodo_vip_expiry', expiry);
                 localStorage.setItem('dodo_status', 'VIP');
-                alert("✨ Accès VIP activé !");
                 location.reload();
             } else if (input === "12199") {
                 localStorage.setItem('dodo_status', 'VIP');
                 location.reload();
-            } else {
-                alert("Code incorrect.");
-            }
+            } else { alert("Code invalide."); }
         }
 
-        function checkVipExpiry() {
+        function checkVip() {
             const expiry = localStorage.getItem('dodo_vip_expiry');
             if (localStorage.getItem('dodo_status') === 'VIP' && expiry) {
                 if (new Date().getTime() > parseInt(expiry)) {
-                    localStorage.removeItem('dodo_vip_expiry');
                     localStorage.removeItem('dodo_status');
-                    alert("Votre accès VIP a expiré.");
-                    location.reload();
+                    localStorage.removeItem('dodo_vip_expiry');
+                    alert("Accès VIP expiré."); location.reload();
                 }
             }
             if(localStorage.getItem('dodo_status') === 'VIP') {
@@ -180,24 +179,23 @@
             const grid = document.getElementById('movieGrid');
             const search = document.getElementById('searchBar').value.toLowerCase();
             const isVip = localStorage.getItem('dodo_status') === 'VIP';
+            const allMovies = [...storedMovies, ...DEFAULT_MOVIES];
             
-            if(userMovies.length > 0) {
-                const last = userMovies[0];
+            if(allMovies.length > 0) {
+                const last = allMovies[0];
                 document.getElementById('heroSection').style.backgroundImage = `url('${last.img}')`;
                 document.getElementById('heroTitle').innerText = last.t;
                 document.getElementById('heroBtn').onclick = () => playV(last.vid, last.c);
             }
 
-            const filtered = userMovies.filter(m => {
-                const matchSearch = m.t.toLowerCase().includes(search);
-                const matchCat = (currentCat === "Tous" || m.c === currentCat);
-                return matchSearch && matchCat;
+            const filtered = allMovies.filter(m => {
+                return (currentCat === "Tous" || m.c === currentCat) && m.t.toLowerCase().includes(search);
             });
 
             grid.innerHTML = filtered.map((m, i) => `
                 <div class="card" onclick="playV('${m.vid}', '${m.c}')" oncontextmenu="deleteM(${i}); return false;">
                     ${m.c === 'VIP' ? '<div class="badge-vip">💎 VIP</div>' : ''}
-                    <img src="${m.img}">
+                    <img src="${m.img}" loading="lazy">
                     <div class="card-title">${m.t}</div>
                 </div>
             `).join('');
@@ -206,19 +204,19 @@
         function addMovie() {
             const t = document.getElementById('mT').value, i = document.getElementById('mI').value, v = document.getElementById('mV').value, c = document.getElementById('mC').value;
             if(t && i && v) {
-                userMovies.unshift({t, img: i, vid: v, c});
-                localStorage.setItem('dodo_lib', JSON.stringify(userMovies));
+                storedMovies.unshift({t, img: i, vid: v, c});
+                localStorage.setItem('dodo_lib', JSON.stringify(storedMovies));
                 location.reload();
             }
         }
 
         function playV(url, cat) {
             if(cat === 'VIP' && localStorage.getItem('dodo_status') !== 'VIP') {
-                alert("🔒 Réservé aux membres PRO !"); return;
+                alert("Accès PRO requis !"); return;
             }
             const container = document.getElementById('videoContainer');
             let fUrl = url.includes("watch?v=") ? url.replace("watch?v=", "embed/") : url;
-            container.innerHTML = `<iframe src="${fUrl}?autoplay=1" style="width:100%; height:85%; border:none;" allowfullscreen></iframe>`;
+            container.innerHTML = `<iframe src="${fUrl}?autoplay=1&mute=0" style="width:100%; height:85%; border:none;" allowfullscreen allow="autoplay"></iframe>`;
             document.getElementById('playerOverlay').style.display = 'block';
         }
 
@@ -226,18 +224,22 @@
             const p = document.getElementById('adminPanel');
             p.style.display = (p.style.display === 'block' ? 'none' : 'block');
         }
-
         function filterCat(cat, btn) {
             currentCat = cat;
             document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             renderAll();
         }
-
         function closeP() { document.getElementById('playerOverlay').style.display = 'none'; document.getElementById('videoContainer').innerHTML = ""; }
-        function deleteM(i) { if(confirm("Supprimer ?")) { userMovies.splice(i,1); localStorage.setItem('dodo_lib', JSON.stringify(userMovies)); renderAll(); } }
+        function deleteM(i) { 
+            if(confirm("Supprimer ce film ?")) { 
+                storedMovies.splice(i,1); 
+                localStorage.setItem('dodo_lib', JSON.stringify(storedMovies)); 
+                location.reload();
+            } 
+        }
 
-        checkVipExpiry();
+        checkVip();
         renderAll();
     </script>
 </body>
