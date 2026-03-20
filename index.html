@@ -25,27 +25,29 @@
         input, select { width: 100%; padding: 12px; margin: 8px 0; background: #333; color: white; border: 1px solid #444; border-radius: 5px; box-sizing: border-box; font-size: 16px; outline: none; }
 
         /* Hero */
-        .hero { padding: 80px 5% 40px 5%; background-size: cover; background-position: center; min-height: 350px; display: flex; flex-direction: column; justify-content: flex-end; position: relative; }
+        .hero { padding: 80px 5% 40px 5%; background-size: cover; background-position: center; min-height: 350px; display: flex; flex-direction: column; justify-content: flex-end; position: relative; transition: 0.3s; }
         .hero::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent, var(--bg)); }
         .hero-content { position: relative; z-index: 2; }
         .hero h1 { font-size: 2.5rem; margin: 0; text-shadow: 2px 2px 15px rgba(0,0,0,1); }
         .btn-play { background: white; color: black; border: none; padding: 12px 30px; border-radius: 4px; font-weight: bold; margin-top: 20px; width: fit-content; font-size: 1.1rem; cursor: pointer; }
 
-        /* Filtres & Grille */
+        /* Filtres */
         .search-area { padding: 20px 5% 0 5%; }
         #search { width: 100%; padding: 15px; border-radius: 8px; border: 1px solid #333; background: #141414; color: white; box-sizing: border-box; }
         .cats { display: flex; gap: 10px; padding: 15px 5%; overflow-x: auto; scrollbar-width: none; }
         .cat-btn { background: #333; color: white; border: none; padding: 10px 25px; border-radius: 20px; white-space: nowrap; font-weight: bold; cursor: pointer; }
         .cat-btn.active { background: var(--primary); }
+        #catVip { display: none; border: 1px solid var(--gold); color: var(--gold); } 
 
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 5% 100px 5%; }
-        .card { background: var(--card-bg); border-radius: 4px; overflow: hidden; cursor: pointer; border: 1px solid #222; }
+        .card { background: var(--card-bg); border-radius: 4px; overflow: hidden; cursor: pointer; border: 1px solid #222; position: relative; }
         .card img { width: 100%; height: 240px; object-fit: cover; display: block; }
         .card-t { padding: 10px; text-align: center; font-size: 0.8rem; font-weight: bold; }
+        .badge-vip { position: absolute; top: 5px; right: 5px; background: var(--gold); color: black; font-size: 0.6rem; padding: 2px 5px; border-radius: 3px; font-weight: bold; }
 
         /* Player */
         #player { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; }
-        .close { position: absolute; top: 25px; left: 25px; font-size: 2rem; color: white; z-index: 10001; background: rgba(0,0,0,0.6); width: 45px; height: 45px; text-align: center; line-height: 45px; border-radius: 50%; }
+        .close { position: absolute; top: 25px; left: 25px; font-size: 2rem; color: white; z-index: 10001; background: rgba(0,0,0,0.6); width: 45px; height: 45px; text-align: center; line-height: 45px; border-radius: 50%; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -60,6 +62,7 @@
                 <option value="Action">Action</option>
                 <option value="Animé">Animé</option>
                 <option value="Horreur">Horreur</option>
+                <option value="VIP">💎 EXCLUSIF VIP</option>
             </select>
             <button onclick="save()" style="width:100%; padding:15px; background:var(--primary); color:white; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">AJOUTER</button>
         </div>
@@ -88,6 +91,7 @@
         <button class="cat-btn" onclick="filter('Action', this)">Action</button>
         <button class="cat-btn" onclick="filter('Animé', this)">Animé</button>
         <button class="cat-btn" onclick="filter('Horreur', this)">Horreur</button>
+        <button id="catVip" class="cat-btn" onclick="filter('VIP', this)">💎 VIP</button>
     </div>
 
     <div class="grid" id="main"></div>
@@ -98,14 +102,13 @@
     </div>
 
     <script>
-        // --- CONFIGURATION ADMIN ---
+        // --- CONFIGURATION ---
         const PASS_ADMIN = "D121028.";
         const MASTER_VIP = "12199"; 
-        
-        // --- LISTE DES CODES TEMPORAIRES (À MODIFIER ICI) ---
+
+        // Modifie tes codes et dates ici
         const CODES_VIP = [
-            { code: "Dodo1234", expire: "2026-03-21 20:00" }, // Expire le 21 mars à 20h
-            { code: "TEST-1H", expire: "2026-03-20 19:30" }
+            { code: "Dodo1234", expire: "2026-03-21 20:00" }
         ];
 
         let currentCat = "Tous";
@@ -115,10 +118,10 @@
 
         function checkStatus() {
             if(localStorage.getItem('isVip') === 'true') {
-                const g = document.getElementById('gradeTxt');
-                g.innerText = "GRADE: PRO ✨";
-                g.classList.add('pro');
+                document.getElementById('gradeTxt').innerText = "GRADE: PRO ✨";
+                document.getElementById('gradeTxt').classList.add('pro');
                 document.getElementById('btnVip').style.display = 'none';
+                document.getElementById('catVip').style.display = 'block';
             }
         }
 
@@ -126,23 +129,23 @@
             const input = prompt("Code VIP :");
             if(!input) return;
 
-            // 1. Vérifier si c'est le code maître
+            // Maître
             if(input === MASTER_VIP) {
                 localStorage.setItem('isVip', 'true');
-                alert("Compte PRO activé (Illimité)");
-                return checkStatus();
+                alert("Accès PRO Illimité activé !");
+                location.reload();
+                return;
             }
 
-            // 2. Vérifier les codes temporaires
+            // Temporaire
             const found = CODES_VIP.find(c => c.code === input);
             if(found) {
                 const maintenant = new Date();
                 const expiration = new Date(found.expire);
-
                 if(maintenant < expiration) {
                     localStorage.setItem('isVip', 'true');
-                    alert("VIP Validé ! Expire le : " + found.expire);
-                    checkStatus();
+                    alert("VIP Validé jusqu'au " + found.expire);
+                    location.reload();
                 } else {
                     alert("Désolé, ce code a expiré le " + found.expire);
                 }
@@ -152,19 +155,30 @@
         }
 
         function render() {
-            const list = JSON.parse(localStorage.getItem('dodo_main_db')) || DEFAUT;
+            const list = JSON.parse(localStorage.getItem('dodo_db_v4')) || DEFAUT;
             const s = document.getElementById('search').value.toLowerCase();
             const container = document.getElementById('main');
+            const isVip = localStorage.getItem('isVip') === 'true';
             container.innerHTML = "";
+
             if(list.length > 0) {
                 document.getElementById('heroT').innerText = list[0].t;
                 document.getElementById('hero').style.backgroundImage = `url('${list[0].i}')`;
             }
+
             const filtered = list.filter(m => (currentCat === "Tous" || m.c === currentCat) && m.t.toLowerCase().includes(s));
+            
             filtered.forEach(m => {
+                // On cache les films VIP aux non-membres
+                if(m.c === "VIP" && !isVip) return; 
+
                 const div = document.createElement('div');
                 div.className = 'card';
-                div.innerHTML = `<img src="${m.i}"><div class="card-t">${m.t}</div>`;
+                div.innerHTML = `
+                    ${m.c === 'VIP' ? '<div class="badge-vip">PRO ✨</div>' : ''}
+                    <img src="${m.i}">
+                    <div class="card-t">${m.t}</div>
+                `;
                 div.onclick = () => openV(m.v);
                 container.appendChild(div);
             });
@@ -174,17 +188,18 @@
             if(prompt("Pass Admin :") === PASS_ADMIN) {
                 const a = document.getElementById('admin');
                 a.style.display = (a.style.display === 'block') ? 'none' : 'block';
+                window.scrollTo(0,0);
             }
         }
 
         function save() {
             const t = document.getElementById('t').value, i = document.getElementById('i').value, v = document.getElementById('v').value, c = document.getElementById('c').value;
             if(t && i && v) {
-                let list = JSON.parse(localStorage.getItem('dodo_main_db')) || DEFAUT;
+                let list = JSON.parse(localStorage.getItem('dodo_db_v4')) || DEFAUT;
                 list.unshift({t, i, v, c});
-                localStorage.setItem('dodo_main_db', JSON.stringify(list));
+                localStorage.setItem('dodo_db_v4', JSON.stringify(list));
                 location.reload();
-            }
+            } else { alert("Remplis tout !"); }
         }
 
         function openV(url) {
@@ -196,7 +211,7 @@
 
         function closeV() { document.getElementById('player').style.display = 'none'; document.getElementById('vBox').innerHTML = ""; }
         function playHero() { 
-            const list = JSON.parse(localStorage.getItem('dodo_main_db')) || DEFAUT;
+            const list = JSON.parse(localStorage.getItem('dodo_db_v4')) || DEFAUT;
             if(list.length > 0) openV(list[0].v); 
         }
 
